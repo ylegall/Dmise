@@ -1,0 +1,200 @@
+
+module prototype.main;
+
+import derelict.sdl2.sdl;
+import derelict.sdl2.ttf;
+import derelict.freetype.ft;
+
+//import prototype.statemanager;
+
+debug {
+	import std.stdio;
+}
+
+//pragma(lib, "lib/libDerelictUtil.a");
+//pragma(lib, "lib/libDerelictFT.a");
+
+/**
+ This is the main class that holds all of
+ the game state
+ */
+class Game
+{
+	private
+	{
+		static Game instance;
+		bool isRunning = false;
+		//SDL_Surface* surface;
+		SDL_Window* window;
+		SDL_Renderer* renderer;
+		//StateManager stateManager;
+	}
+
+	package
+	{
+		TTF_Font* font;
+	}
+
+	// static initializer
+	static this() {
+		instance = new Game();
+	}
+
+	// private constructor
+	private this() {
+		isRunning = true;
+		//surface = null;
+		//stateManager = new StateManager();
+	}
+
+	/**
+	 gets the single instance of the game
+	 */
+	@property
+	public static Game getInstance() {
+		return instance;
+	}
+
+	/**
+	 initializes the drawing surface and the window
+	 */
+	bool OnInit() {
+		if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+			return false;
+		}
+
+		window = SDL_CreateWindow(
+			"Game test",
+			SDL_WINDOWPOS_UNDEFINED,
+			SDL_WINDOWPOS_UNDEFINED,
+			640, 480,
+			//SDL_WINDOW_FULLSCREEN|SDL_WINDOW_SHOWN
+			SDL_WINDOW_SHOWN
+		);
+		if (!window) return false;
+
+
+		renderer = SDL_CreateRenderer(
+			window,
+			-1,
+			SDL_RENDERER_ACCELERATED
+		);
+		if (!renderer) return false;
+
+		// Load ttf library:
+		//writeln("HERE");
+		//if (TTF_Init() < 0) return false;
+		//writeln("HERE");
+		//font = TTF_OpenFont("res/fonts/UbuntuMono-R.ttf", 12);
+		//writeln("HERE");
+		//if (!font) {
+			//writef("TTF_OpenFont: %s\n", TTF_GetError());
+		//}
+
+		return true;
+	}
+
+
+	/**
+	 * handles SDL events such as mouse, keyboard, etc.
+	 */
+	void OnEvent(SDL_Event* e) {
+		switch(e.type) {
+			case SDL_KEYDOWN:
+				switch(e.key.keysym.sym) {
+					case 'p':
+						writeln("pause");
+						return;
+					case 'q':
+						writeln("quit");
+						isRunning = false;
+						return;
+					case SDLK_ESCAPE:
+						writeln("ESC");
+						isRunning = false;
+						return;
+					default:
+						break;
+				}
+				break;
+
+			case SDL_QUIT:
+				isRunning = false;
+				break;
+
+			default:
+				break;
+		}
+
+		//stateManager.onEvent(e);
+	}
+
+
+	/**
+	 * updates sprites and other game objects
+	 */
+	void OnLoop() {
+		// TODO: get the elapsed time
+		//stateManager.update(0);
+	}
+
+	/**
+	 * draws all game objects
+	 */
+	void OnRender() {
+		SDL_RenderClear(renderer);
+
+		//stateManager.draw();
+		//SDL_Flip(surface);
+
+		//SDL_RenderCopy(renderer, , ,);
+		//SDL_RenderPresent(renderer);
+	}
+
+	/**
+	 * called when the player is quitting.
+	 * cleans up any resources.
+	 */
+	void OnCleanup() {
+		writeln("shutting down.");
+		//TTF_CloseFont(font);
+		//TTF_Quit();
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
+		SDL_Quit();
+	}
+
+	/**
+	 * This is the main game loop.
+	 */
+	int OnExecute() {
+
+		if(!OnInit()) {
+			return -1;
+		}
+
+		SDL_Event Event;
+		while(isRunning) {
+			while(SDL_PollEvent(&Event)) {
+				OnEvent(&Event);
+			}
+			OnLoop();
+			OnRender();
+		}
+		OnCleanup();
+		return 0;
+	}
+}
+
+int main(string[] args)
+{
+	DerelictSDL2.load();
+	DerelictSDL2.load("./libSDL2_ttf.so");
+	//DerelictSDL2ttf.load();
+	if (TTF_Init() < 0) return false;
+	DerelictFT.load();
+	//DerelictAL.load();
+	Game game = Game.getInstance;
+	return game.OnExecute();
+}
+
