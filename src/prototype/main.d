@@ -10,6 +10,7 @@ debug
 
 pragma(lib, "DerelictSDL2");
 pragma(lib, "DerelictUtil");
+//pragma(lib, "SDL2_image");
 pragma(lib, "dl");
 
 enum TITLE = "Prototype";
@@ -17,13 +18,12 @@ enum TITLE = "Prototype";
 // private fields:
 private
 {
-	SDL_Window* window;
 	SDL_Renderer* renderer;
-    SDL_Texture* bitmapTex;
     SDL_Surface* bitmapSurface;
 
     bool isRunning;
     Game game;
+    Graphics graphics;
 }
 
 // initialize SDL systems:
@@ -31,13 +31,13 @@ private auto init()
 {
 	debug writeln("initializeing SDL ...");
 	auto status = SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO);
-	assert(status == 0, "failed to initialize SDL.");
-	assert(SDL_WasInit(SDL_INIT_VIDEO), "failed to load video system");
-	assert(SDL_WasInit(SDL_INIT_AUDIO), "failed to load audio system");
+	enforce(status == 0, "failed to initialize SDL.");
+	enforce(SDL_WasInit(SDL_INIT_VIDEO), "failed to load video system");
+	enforce(SDL_WasInit(SDL_INIT_AUDIO), "failed to load audio system");
 	debug writeln("done.");
 
 	// Create an application window with the following settings:
-	window = SDL_CreateWindow( 
+	graphics.window = SDL_CreateWindow( 
 		TITLE,                             //    window title
 		SDL_WINDOWPOS_UNDEFINED,           //    initial x position
 	    SDL_WINDOWPOS_UNDEFINED,           //    initial y position
@@ -46,7 +46,17 @@ private auto init()
 	    SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL //|SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS|SDL_WINDOW_MAXIMIZED
     );
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    graphics.renderer = SDL_CreateRenderer(graphics.window, -1, SDL_RENDERER_ACCELERATED);
+
+    // initialize SDL_Image:
+    auto flags = IMG_INIT_PNG;
+    writeln("flags = ", flags);
+	status = IMG_Init(flags);
+	writeln("status = ", status);
+	if ((status & flags) != flags) {
+		write("IMG_Init failed: "); printf(IMG_GetError()); writeln();
+	}
+	enforce((status & flags) == flags, "IMG_Init failed: ");
 
     game.init();
 }
@@ -71,33 +81,34 @@ private auto run()
 	        game.onEvent(event);
         }
 
-        game.draw();
-
         game.update(delta);
-
-	    SDL_RenderClear(renderer);
-	    SDL_RenderCopy(renderer, bitmapTex, null, null);
-	    SDL_RenderPresent(renderer);
+        game.draw(graphics);
+        SDL_RenderPresent(graphics.renderer);
     }
 }
 
+auto getGraphics() {
+	return graphics;
+}
 
 // cleanup resources:
 private auto shutdown()
 {
 	writeln("shutting down...");
-    SDL_DestroyTexture(bitmapTex);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window); 
+	IMG_Quit();
+	SDL_DestroyRenderer(graphics.renderer);
+	SDL_DestroyWindow(graphics.window); 
 	SDL_Quit();
 }
-
 
 int main(string[] args)
 {
 	// load derelict bindings:
 	DerelictSDL2.load();
-	
+	//DerelictSDL2Image.load();
+	DerelictSDL2Image.load("lib/libSDL2_image.so");
+
+
 	init();
 	run();
 	shutdown();

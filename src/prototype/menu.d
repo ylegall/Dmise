@@ -14,12 +14,29 @@ class Menu : GameState
 	{
 		bool isRunning = true;
 		int index = 0;
+
 		auto items = [
 			"new game ",
 			"load game",
 			"settings",
 			"about"
 		];
+
+		SDL_Texture* logo;
+	}
+
+	this() {
+		auto g = getGraphics();
+		SDL_Surface* surface = IMG_Load("res/images/logo.png");
+		//SDL_Surface* surface = IMG_Load_RW(SDL_RWFromFile("res/images/logo.png", "rb"), 1);
+		if (!surface) throw new Exception("surface is null");
+		logo = SDL_CreateTextureFromSurface(g.renderer, surface);
+		SDL_FreeSurface(surface);
+		enforce(logo, "could not load logo.png");
+	}
+
+	~this() {
+		SDL_DestroyTexture(logo);
 	}
 
 	void onEvent(SDL_Event event)
@@ -82,8 +99,8 @@ class Menu : GameState
 
 	}
 
-	void draw() {
-		
+	void draw(Graphics g) {
+		SDL_RenderCopy(g.renderer, logo, null, null);
 	}
 
 }

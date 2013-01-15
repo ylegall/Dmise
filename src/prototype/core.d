@@ -4,10 +4,14 @@ module prototype.core;
 public
 {
 	import derelict.sdl2.sdl;
+	import derelict.sdl2.image;
 
+	import prototype.main;
 	import prototype.game;
 	import prototype.menu;
 
+	//import std.conv;
+	import std.exception;
 	debug
 	{
 		import std.stdio;
@@ -22,7 +26,7 @@ interface GameObject
 	bool isAlive();
 	void onEvent(SDL_Event event);
 	void update(double delta);
-	void draw();
+	void draw(Graphics g);
 }
 
 /**
@@ -32,7 +36,12 @@ abstract class GameState : GameObject
 {
 	void onHide() {}
 	void onShow() {}
-	void onDestroy() {}
+}
+
+struct Graphics
+{
+	SDL_Window* window;
+	SDL_Renderer* renderer;
 }
 
 /**

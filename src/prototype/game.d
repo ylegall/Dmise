@@ -70,10 +70,10 @@ struct Game
 		checkAlive();
 	}
 
-	void draw()
+	void draw(Graphics g)
 	{
 		if (!stack.isEmpty()) {
-			stack.top.draw();
+			stack.top.draw(g);
 		}
 	}
 
