@@ -8,14 +8,14 @@ struct Game
 {
 	private
 	{
-		bool isRunning;
+		bool alive;
 		GameStack!4 stack;
 	}
 
 	auto checkAlive() {
 		if (stack.top && !stack.top.isAlive()) {
 			stack.pop();
-			isRunning = !stack.isEmpty();
+			alive = !stack.isEmpty();
 		}
 	}
 
@@ -23,12 +23,12 @@ struct Game
 	{
 		stack.push(new Menu());
 		assert(stack.top, "stack top should not be null");
-		isRunning = true;
+		alive = true;
 	}
 
 	bool isAlive()
 	{
-		return isRunning;
+		return alive;
 	}
 
 	/**
@@ -38,31 +38,6 @@ struct Game
 		if (!stack.isEmpty()) {
 			stack.top.onEvent(event);
 		}
-
-		//switch(event.type) {			
-		//	case SDL_KEYDOWN:
-		//		switch(event.key.keysym.sym) {
-		//			case 'p':
-		//				debug writeln("pause");
-		//				break;
-
-		//			case 'q':
-		//				debug writeln("quit");
-		//				break;
-
-		//			case SDLK_ESCAPE:
-		//				debug writeln("ESC");
-		//				isRunning = false;
-		//				return;
-
-		//			default:
-		//				break;
-		//		}
-		//		break;
-
-		//	default:
-		//		break;
-		//}
 	}
 
 	void update(double delta)
@@ -77,5 +52,11 @@ struct Game
 		}
 	}
 
+	void shutdown() {
+		alive = false;
+		while (!stack.isEmpty()) {
+			stack.pop();
+		}
+	}
 }
 

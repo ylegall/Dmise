@@ -13,8 +13,6 @@ pragma(lib, "DerelictUtil");
 //pragma(lib, "SDL2_image");
 pragma(lib, "dl");
 
-enum TITLE = "Prototype";
-
 // private fields:
 private
 {
@@ -26,9 +24,16 @@ private
     Graphics graphics;
 }
 
+package {
+	GameInfo gameInfo;
+}
+
 // initialize SDL systems:
+// TODO: load settings
 private auto init()
 {
+	// load game data:
+
 	debug writeln("initializeing SDL ...");
 	auto status = SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 	enforce(status == 0, "failed to initialize SDL.");
@@ -38,11 +43,11 @@ private auto init()
 
 	// Create an application window with the following settings:
 	graphics.window = SDL_CreateWindow( 
-		TITLE,                             //    window title
-		SDL_WINDOWPOS_UNDEFINED,           //    initial x position
-	    SDL_WINDOWPOS_UNDEFINED,           //    initial y position
-	    1000,                              //    width, in pixels
-	    800,                               //    height, in pixels
+		gameInfo.name.ptr,              //    window title
+		SDL_WINDOWPOS_UNDEFINED,        //    initial x position
+	    SDL_WINDOWPOS_UNDEFINED,        //    initial y position
+	    gameInfo.width,                //    width, in pixels
+	    gameInfo.height,                 //    height, in pixels
 	    SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL //|SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS|SDL_WINDOW_MAXIMIZED
     );
 
@@ -50,17 +55,27 @@ private auto init()
 
     // initialize SDL_Image:
     auto flags = IMG_INIT_PNG;
-    writeln("flags = ", flags);
 	status = IMG_Init(flags);
-	writeln("status = ", status);
 	if ((status & flags) != flags) {
 		write("IMG_Init failed: "); printf(IMG_GetError()); writeln();
 	}
 	enforce((status & flags) == flags, "IMG_Init failed: ");
 
+	// initialize SDL_Audio
+
+	// initialize font SDL_TTF:
+	status = TTF_Init();
+	enforce(status == 0, "TTF_Init failed.");
+
+	graphics.font = TTF_OpenFont("res/fonts/digitek.ttf", 16);
+	if (!graphics.font) {
+	    writefln("TTF_OpenFont failed: %s", TTF_GetError());
+	    assert(false);
+	}
+    // handle error
+
     game.init();
 }
-
 
 // main game loop
 private auto run()
@@ -75,8 +90,8 @@ private auto run()
         if (SDL_PollEvent(&event)) {
         	debug writeln("received event type: ", event.type);
             if (event.type == SDL_QUIT) {
-            	writeln("QUIT");
-                break;
+            	game.shutdown();
+            	break;
             }
 	        game.onEvent(event);
         }
@@ -95,9 +110,10 @@ auto getGraphics() {
 private auto shutdown()
 {
 	writeln("shutting down...");
+	TTF_Quit();
 	IMG_Quit();
 	SDL_DestroyRenderer(graphics.renderer);
-	SDL_DestroyWindow(graphics.window); 
+	SDL_DestroyWindow(graphics.window);
 	SDL_Quit();
 }
 
@@ -107,7 +123,7 @@ int main(string[] args)
 	DerelictSDL2.load();
 	//DerelictSDL2Image.load();
 	DerelictSDL2Image.load("lib/libSDL2_image.so");
-
+	DerelictSDL2ttf.load("lib/libSDL2_ttf.so");
 
 	init();
 	run();

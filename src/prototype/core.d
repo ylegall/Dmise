@@ -5,13 +5,16 @@ public
 {
 	import derelict.sdl2.sdl;
 	import derelict.sdl2.image;
+	import derelict.sdl2.ttf;
 
 	import prototype.main;
 	import prototype.game;
 	import prototype.menu;
+	import prototype.util;
 
 	//import std.conv;
 	import std.exception;
+	import std.c.stdlib;
 	debug
 	{
 		import std.stdio;
@@ -19,7 +22,7 @@ public
 }
 
 /**
- *
+ *  All game objects will have the following functions:
  */
 interface GameObject
 {
@@ -30,7 +33,7 @@ interface GameObject
 }
 
 /**
- *
+ * 
  */
 abstract class GameState : GameObject
 {
@@ -38,10 +41,26 @@ abstract class GameState : GameObject
 	void onShow() {}
 }
 
+/**
+ * Holds information and meta data about  the game
+ */
+struct GameInfo
+{
+	string name = "Prototype";
+	int height = 800;
+	int width = 800;
+	string resourcesDir = "res/";
+	string libDir = "lib/";
+}
+
+/**
+ * Holds references to types needed for graphics
+ */
 struct Graphics
 {
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+	TTF_Font* font;
 }
 
 /**

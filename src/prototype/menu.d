@@ -16,27 +16,60 @@ class Menu : GameState
 		int index = 0;
 
 		auto items = [
-			"new game ",
+			"new game",
 			"load game",
 			"settings",
-			"about"
+			"about",
+			"quit"
 		];
+		alias void delegate() Action;
+		Action[string] actions;
 
 		SDL_Texture* logo;
+		SDL_Rect logoRect;
+		SDL_Texture** menuLabels;
+
+		SDL_Color fgColor = {0, 0, 0};
+		SDL_Color bgColor = {0, 255, 0};
+		SDL_Color bgSelectedColor = {0, 255, 255};
 	}
 
 	this() {
 		auto g = getGraphics();
 		SDL_Surface* surface = IMG_Load("res/images/logo.png");
-		//SDL_Surface* surface = IMG_Load_RW(SDL_RWFromFile("res/images/logo.png", "rb"), 1);
-		if (!surface) throw new Exception("surface is null");
+		logoRect = SDL_Rect(0, 100, surface.w, surface.h);
+		centerHorizontal(logoRect);
+		enforce (surface, "surface is null");
 		logo = SDL_CreateTextureFromSurface(g.renderer, surface);
-		SDL_FreeSurface(surface);
 		enforce(logo, "could not load logo.png");
+
+		// load actions
+		loadMenuActions();
+
+		// draw menu items:
+		auto font = g.font;
+		menuLabels = cast(SDL_Texture**)malloc(items.length * size_t.sizeof);
+		foreach (i; 0 .. items.length) {
+			surface = TTF_RenderText_Blended(font, items[i].ptr, fgColor);
+			menuLabels[i] = SDL_CreateTextureFromSurface(g.renderer, surface);
+		}
+		SDL_FreeSurface(surface);
+	}
+
+	// setup the actions for each menu item:
+	auto loadMenuActions() {
+			actions["new game"] = {};
+			actions["load game"] = {};
+			actions["settings"] = {};
+			actions["about"] = {};
+			actions["quit"] = { isRunning = false; };
 	}
 
 	~this() {
 		SDL_DestroyTexture(logo);
+		foreach (i; 0 .. items.length) {
+			SDL_DestroyTexture(menuLabels[i]);
+		}
 	}
 
 	void onEvent(SDL_Event event)
@@ -61,6 +94,8 @@ class Menu : GameState
 
 					case SDLK_RETURN:
 						debug writeln("Mainmenu: Keydown RETURN");
+						auto menuItem = items[index];
+						actions[menuItem]();
 						break;
 
 					case 'q':
@@ -100,8 +135,28 @@ class Menu : GameState
 	}
 
 	void draw(Graphics g) {
-		SDL_RenderCopy(g.renderer, logo, null, null);
+		SDL_RenderCopy(g.renderer, logo, null, &logoRect);
+		SDL_Rect labelRect = {logoRect.x, 200, logoRect.w, 30};
+		foreach (i; 0 .. items.length) {
+			if (i == index) {
+				SDL_SetRenderDrawColor(
+					g.renderer,
+					bgSelectedColor.r,
+					bgSelectedColor.g,
+					bgSelectedColor.b,
+					225);
+			} else {
+				SDL_SetRenderDrawColor(
+					g.renderer,
+					bgColor.r,
+					bgColor.g,
+					bgColor.b,
+					200);
+			}
+			SDL_RenderFillRect(g.renderer, &labelRect);
+			SDL_RenderCopy(g.renderer, menuLabels[i], null, &labelRect);
+			++i;
+			labelRect.y += (30*i) + 30;
+		}
 	}
-
 }
-
