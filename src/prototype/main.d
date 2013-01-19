@@ -17,7 +17,6 @@ pragma(lib, "dl");
 private
 {
 	SDL_Renderer* renderer;
-    SDL_Surface* bitmapSurface;
 
     bool isRunning;
     Game game;

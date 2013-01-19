@@ -135,8 +135,18 @@ class Menu : GameState
 	}
 
 	void draw(Graphics g) {
+		// reder the logo:
 		SDL_RenderCopy(g.renderer, logo, null, &logoRect);
+
+		// TODO: render a background:
+		SDL_RenderFillRect(g.renderer, &labelRect);
+
+		// render the menu box:
+
+
 		SDL_Rect labelRect = {logoRect.x, 200, logoRect.w, 30};
+
+
 		foreach (i; 0 .. items.length) {
 			if (i == index) {
 				SDL_SetRenderDrawColor(
@@ -155,8 +165,7 @@ class Menu : GameState
 			}
 			SDL_RenderFillRect(g.renderer, &labelRect);
 			SDL_RenderCopy(g.renderer, menuLabels[i], null, &labelRect);
-			++i;
-			labelRect.y += (30*i) + 30;
+			labelRect.y += 50;
 		}
 	}
 }
