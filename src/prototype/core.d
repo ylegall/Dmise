@@ -53,6 +53,9 @@ struct GameInfo
 	string libDir = "lib/";
 }
 
+enum BLUE = SDL_Color(0, 128, 255);
+enum DARK_GRAY = SDL_Color(64, 64, 64);
+
 /**
  * Holds references to types needed for graphics
  */
@@ -60,6 +63,7 @@ struct Graphics
 {
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+	SDL_Surface* surface;
 	TTF_Font* font;
 }
 

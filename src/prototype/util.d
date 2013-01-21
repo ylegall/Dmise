@@ -6,9 +6,24 @@ import prototype.core;
 import std.traits;
 import std.algorithm;
 
-auto centerHorizontal(ref SDL_Rect rect) {
+auto centerHorizontal(ref SDL_Rect rect)
+{
 	rect.x = (prototype.core.gameInfo.width)/2 - rect.w/2;
-}	
+}
+
+
+auto setColor(SDL_Renderer* r, SDL_Color c, ubyte a=255)
+{
+	SDL_SetRenderDrawColor(r, c.r, c.g, c.b, a);
+}
+
+auto getColor(SDL_Renderer* r)
+{
+	SDL_Color c;
+	ubyte a;
+	SDL_GetRenderDrawColor(r, &c.r,&c.g, &c.b, &a);
+	return c;
+}
 
 struct Stack(T)
 {

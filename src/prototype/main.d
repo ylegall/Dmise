@@ -10,14 +10,12 @@ debug
 
 pragma(lib, "DerelictSDL2");
 pragma(lib, "DerelictUtil");
-//pragma(lib, "SDL2_image");
 pragma(lib, "dl");
 
 // private fields:
 private
 {
 	SDL_Renderer* renderer;
-
     bool isRunning;
     Game game;
     Graphics graphics;
@@ -45,12 +43,21 @@ private auto init()
 		gameInfo.name.ptr,              //    window title
 		SDL_WINDOWPOS_UNDEFINED,        //    initial x position
 	    SDL_WINDOWPOS_UNDEFINED,        //    initial y position
-	    gameInfo.width,                //    width, in pixels
-	    gameInfo.height,                 //    height, in pixels
+	    gameInfo.width,                 //    width, in pixels
+	    gameInfo.height,                //    height, in pixels
 	    SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL //|SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS|SDL_WINDOW_MAXIMIZED
     );
 
     graphics.renderer = SDL_CreateRenderer(graphics.window, -1, SDL_RENDERER_ACCELERATED);
+    graphics.surface = SDL_CreateRGBSurface(
+    	0, 
+    	gameInfo.width,
+    	gameInfo.height,
+    	32,
+    	0,
+    	0,
+    	0,
+    	0);
 
     // initialize SDL_Image:
     auto flags = IMG_INIT_PNG;
@@ -111,6 +118,7 @@ private auto shutdown()
 	writeln("shutting down...");
 	TTF_Quit();
 	IMG_Quit();
+	SDL_FreeSurface(graphics.surface);
 	SDL_DestroyRenderer(graphics.renderer);
 	SDL_DestroyWindow(graphics.window);
 	SDL_Quit();

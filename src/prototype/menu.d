@@ -27,17 +27,18 @@ class Menu : GameState
 
 		SDL_Texture* logo;
 		SDL_Rect logoRect;
+		SDL_Rect menuRect;
 		SDL_Texture** menuLabels;
 
 		SDL_Color fgColor = {0, 0, 0};
 		SDL_Color bgColor = {0, 255, 0};
-		SDL_Color bgSelectedColor = {0, 255, 255};
 	}
 
 	this() {
 		auto g = getGraphics();
 		SDL_Surface* surface = IMG_Load("res/images/logo.png");
 		logoRect = SDL_Rect(0, 100, surface.w, surface.h);
+		menuRect = SDL_Rect(0, 200, gameInfo.width, 150);
 		centerHorizontal(logoRect);
 		enforce (surface, "surface is null");
 		logo = SDL_CreateTextureFromSurface(g.renderer, surface);
@@ -70,6 +71,7 @@ class Menu : GameState
 		foreach (i; 0 .. items.length) {
 			SDL_DestroyTexture(menuLabels[i]);
 		}
+		free(menuLabels);
 	}
 
 	void onEvent(SDL_Event event)
@@ -135,37 +137,28 @@ class Menu : GameState
 	}
 
 	void draw(Graphics g) {
+		auto oldColor = g.renderer.getColor();
+
 		// reder the logo:
 		SDL_RenderCopy(g.renderer, logo, null, &logoRect);
 
-		// TODO: render a background:
-		SDL_RenderFillRect(g.renderer, &labelRect);
+		// TODO: render background:
 
 		// render the menu box:
+		setColor(g.renderer, DARK_GRAY, 150);
+		SDL_RenderFillRect(g.renderer, &menuRect);
 
+		//SDL_RenderFillRect(g.renderer, &labelRect);
 
-		SDL_Rect labelRect = {logoRect.x, 200, logoRect.w, 30};
-
-
+		SDL_Rect labelRect = {menuRect.x, menuRect.y, menuRect.w, 30};
+		setColor(g.renderer, BLUE, 150);
 		foreach (i; 0 .. items.length) {
 			if (i == index) {
-				SDL_SetRenderDrawColor(
-					g.renderer,
-					bgSelectedColor.r,
-					bgSelectedColor.g,
-					bgSelectedColor.b,
-					225);
-			} else {
-				SDL_SetRenderDrawColor(
-					g.renderer,
-					bgColor.r,
-					bgColor.g,
-					bgColor.b,
-					200);
+				SDL_RenderFillRect(g.renderer, &labelRect);
 			}
-			SDL_RenderFillRect(g.renderer, &labelRect);
-			SDL_RenderCopy(g.renderer, menuLabels[i], null, &labelRect);
-			labelRect.y += 50;
+			//SDL_RenderCopy(g.renderer, menuLabels[i], null, &labelRect);
+			labelRect.y += 30;
 		}
+		g.renderer.setColor(oldColor);
 	}
 }
