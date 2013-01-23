@@ -49,12 +49,16 @@ struct GameInfo
 	string name = "Prototype";
 	int height = 800;
 	int width = 800;
+	int padding = 20;
 	string resourcesDir = "res/";
 	string libDir = "lib/";
 }
 
-enum BLUE = SDL_Color(0, 128, 255);
-enum DARK_GRAY = SDL_Color(64, 64, 64);
+struct Colors {
+	enum BLUE = SDL_Color(0, 128, 255);
+	enum DARK_GRAY = SDL_Color(64, 64, 64);
+	enum DEFAULT_TEXT_COLOR = SDL_Color(255,255,255);
+}
 
 /**
  * Holds references to types needed for graphics
@@ -63,7 +67,6 @@ struct Graphics
 {
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	SDL_Surface* surface;
 	TTF_Font* font;
 }
 

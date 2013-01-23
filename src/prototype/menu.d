@@ -145,13 +145,13 @@ class Menu : GameState
 		// TODO: render background:
 
 		// render the menu box:
-		setColor(g.renderer, DARK_GRAY, 150);
+		setColor(g.renderer, Colors.DARK_GRAY, 150);
 		SDL_RenderFillRect(g.renderer, &menuRect);
 
 		//SDL_RenderFillRect(g.renderer, &labelRect);
 
 		SDL_Rect labelRect = {menuRect.x, menuRect.y, menuRect.w, 30};
-		setColor(g.renderer, BLUE, 150);
+		setColor(g.renderer, Colors.BLUE, 150);
 		foreach (i; 0 .. items.length) {
 			if (i == index) {
 				SDL_RenderFillRect(g.renderer, &labelRect);

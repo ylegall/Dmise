@@ -6,11 +6,11 @@ import prototype.core;
 import std.traits;
 import std.algorithm;
 
+
 auto centerHorizontal(ref SDL_Rect rect)
 {
 	rect.x = (prototype.core.gameInfo.width)/2 - rect.w/2;
 }
-
 
 auto setColor(SDL_Renderer* r, SDL_Color c, ubyte a=255)
 {
@@ -23,6 +23,34 @@ auto getColor(SDL_Renderer* r)
 	ubyte a;
 	SDL_GetRenderDrawColor(r, &c.r,&c.g, &c.b, &a);
 	return c;
+}
+
+/**
+ * utility a texture for text
+ */
+auto makeText(string message, SDL_Color color)
+{
+	SDL_Surface* surface;
+	auto g = getGraphics();
+	version (textQualityLow) {
+		surface = TTF_RenderText_Solid(g.font, message.ptr, color);
+	}
+	version (textQualityMed) {
+		surface = TTF_RenderText_Shaded(g.font, message.ptr, color);
+	}
+	version (textQualityHigh) {
+		surface = TTF_RenderText_Blended(font, message.ptr, color);
+	}
+	assert(surface, "could not render surface");
+	return makeTexture(g, surface);
+}
+
+/**
+ * utility to make a texture from a surface
+ */
+auto makeTexture(Graphics g, SDL_Surface* surface)
+{
+	return SDL_CreateTextureFromSurface(g.renderer, surface);
 }
 
 struct Stack(T)

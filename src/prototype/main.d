@@ -49,15 +49,6 @@ private auto init()
     );
 
     graphics.renderer = SDL_CreateRenderer(graphics.window, -1, SDL_RENDERER_ACCELERATED);
-    graphics.surface = SDL_CreateRGBSurface(
-    	0, 
-    	gameInfo.width,
-    	gameInfo.height,
-    	32,
-    	0,
-    	0,
-    	0,
-    	0);
 
     // initialize SDL_Image:
     auto flags = IMG_INIT_PNG;
@@ -118,7 +109,6 @@ private auto shutdown()
 	writeln("shutting down...");
 	TTF_Quit();
 	IMG_Quit();
-	SDL_FreeSurface(graphics.surface);
 	SDL_DestroyRenderer(graphics.renderer);
 	SDL_DestroyWindow(graphics.window);
 	SDL_Quit();
