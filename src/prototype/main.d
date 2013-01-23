@@ -64,7 +64,7 @@ private auto init()
 	status = TTF_Init();
 	enforce(status == 0, "TTF_Init failed.");
 
-	graphics.font = TTF_OpenFont("res/fonts/digitek.ttf", 16);
+	graphics.font = TTF_OpenFont((gameInfo.resourcesDir ~ "fonts/" ~ gameInfo.fontName).ptr, 22);
 	if (!graphics.font) {
 	    writefln("TTF_OpenFont failed: %s", TTF_GetError());
 	    assert(false);

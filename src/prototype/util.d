@@ -26,21 +26,21 @@ auto getColor(SDL_Renderer* r)
 }
 
 /**
- * utility a texture for text
+ * utility a texture for text.
+ * TODO
  */
-auto makeText(string message, SDL_Color color)
+auto makeText(string message, SDL_Color fgColor, SDL_Color bgColor = Colors.BACKGROUND )
 {
 	SDL_Surface* surface;
 	auto g = getGraphics();
 	version (textQualityLow) {
-		surface = TTF_RenderText_Solid(g.font, message.ptr, color);
+		surface = TTF_RenderText_Solid(g.font, message.ptr, fgColor);
+	} else version (textQualityHigh) {
+		surface = TTF_RenderText_Blended(g.font, message.ptr, fgColor);
+	} else {
+		surface = TTF_RenderText_Shaded(g.font, message.ptr, fgColor, bgColor);
 	}
-	version (textQualityMed) {
-		surface = TTF_RenderText_Shaded(g.font, message.ptr, color);
-	}
-	version (textQualityHigh) {
-		surface = TTF_RenderText_Blended(font, message.ptr, color);
-	}
+
 	assert(surface, "could not render surface");
 	return makeTexture(g, surface);
 }

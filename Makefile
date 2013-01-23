@@ -8,9 +8,10 @@ BINDIR=bin
 
 LDFLAGS=-L-L$(LIBDIR)
 #DFLAGS=-release
-DFLAGS=-debug
+DFLAGS=-debug -version=textQualityHigh
 
-FILES=$(shell echo $(SRCDIR)/*.d)
+#FILES=$(shell echo $(SRCDIR)/*.d)
+FILES=$(shell find $(SRCDIR) -name *.d)
 OBJS=$(FILES,.d=.o)
 
 ARGS=

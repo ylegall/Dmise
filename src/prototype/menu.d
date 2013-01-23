@@ -2,8 +2,20 @@
 module prototype.menu;
 
 import prototype.core;
+import prototype.ui.label;
 
 import std.algorithm;
+
+// TODO: make this a button
+struct MenuItem {
+	alias void delegate() Action;
+	Label label;
+	Action action;
+	this(string str, Action action) {
+		label = new Label(str);
+		this.action = action;
+	}
+}
 
 /**
  * 
@@ -15,15 +27,7 @@ class Menu : GameState
 		bool isRunning = true;
 		int index = 0;
 
-		auto items = [
-			"new game",
-			"load game",
-			"settings",
-			"about",
-			"quit"
-		];
-		alias void delegate() Action;
-		Action[string] actions;
+		MenuItem[] menuItems;
 
 		SDL_Texture* logo;
 		SDL_Rect logoRect;
@@ -38,40 +42,32 @@ class Menu : GameState
 		auto g = getGraphics();
 		SDL_Surface* surface = IMG_Load("res/images/logo.png");
 		logoRect = SDL_Rect(0, 100, surface.w, surface.h);
-		menuRect = SDL_Rect(0, 200, gameInfo.width, 150);
+		menuRect = SDL_Rect(0, 200, gameInfo.width, 200);
 		centerHorizontal(logoRect);
 		enforce (surface, "surface is null");
 		logo = SDL_CreateTextureFromSurface(g.renderer, surface);
 		enforce(logo, "could not load logo.png");
 
-		// load actions
-		loadMenuActions();
+		menuItems = [
+			MenuItem("new game", delegate void() {}),
+			MenuItem("load game", delegate void() {}),
+			MenuItem("settings", delegate void() {}),
+			MenuItem("about", delegate void() {}),
+			MenuItem("quit", delegate void() { isRunning = false; })
+		];
 
-		// draw menu items:
-		auto font = g.font;
-		menuLabels = cast(SDL_Texture**)malloc(items.length * size_t.sizeof);
-		foreach (i; 0 .. items.length) {
-			surface = TTF_RenderText_Blended(font, items[i].ptr, fgColor);
-			menuLabels[i] = SDL_CreateTextureFromSurface(g.renderer, surface);
+		auto i = 0;
+		foreach (item; menuItems) {
+			item.label.setLocation(0, menuRect.y + i * 35);
+			++i;
 		}
-		SDL_FreeSurface(surface);
-	}
-
-	// setup the actions for each menu item:
-	auto loadMenuActions() {
-			actions["new game"] = {};
-			actions["load game"] = {};
-			actions["settings"] = {};
-			actions["about"] = {};
-			actions["quit"] = { isRunning = false; };
 	}
 
 	~this() {
 		SDL_DestroyTexture(logo);
-		foreach (i; 0 .. items.length) {
-			SDL_DestroyTexture(menuLabels[i]);
+		foreach (item; menuItems) {
+			delete item.label;
 		}
-		free(menuLabels);
 	}
 
 	void onEvent(SDL_Event event)
@@ -96,8 +92,8 @@ class Menu : GameState
 
 					case SDLK_RETURN:
 						debug writeln("Mainmenu: Keydown RETURN");
-						auto menuItem = items[index];
-						actions[menuItem]();
+						auto menuItem = menuItems[index];
+						menuItem.action();
 						break;
 
 					case 'q':
@@ -118,14 +114,14 @@ class Menu : GameState
 
 	auto selectNext() {
 		index += 1;
-		index  = min(items.length - 1, index);
-		debug writeln("selected text = ", items[index]);
+		index  = min(menuItems.length - 1, index);
+		debug writeln("selected text = ", menuItems[index]);
 	}
 
 	auto selectPrev() {
 		index -= 1;
 		index  = max(0, index);
-		debug writeln("selected text = ", items[index]);
+		debug writeln("selected text = ", menuItems[index]);
 	}
 
 	bool isAlive() {
@@ -148,17 +144,10 @@ class Menu : GameState
 		setColor(g.renderer, Colors.DARK_GRAY, 150);
 		SDL_RenderFillRect(g.renderer, &menuRect);
 
-		//SDL_RenderFillRect(g.renderer, &labelRect);
-
-		SDL_Rect labelRect = {menuRect.x, menuRect.y, menuRect.w, 30};
-		setColor(g.renderer, Colors.BLUE, 150);
-		foreach (i; 0 .. items.length) {
-			if (i == index) {
-				SDL_RenderFillRect(g.renderer, &labelRect);
-			}
-			//SDL_RenderCopy(g.renderer, menuLabels[i], null, &labelRect);
-			labelRect.y += 30;
+		// render the menuItems
+		foreach (item; menuItems) {
+			item.label.draw(g);
 		}
-		g.renderer.setColor(oldColor);
+
 	}
 }

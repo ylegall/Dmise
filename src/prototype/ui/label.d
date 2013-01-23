@@ -16,17 +16,16 @@ class Label : GameObject
 
 	bool hasBackground = true;
 	bool hasBorder = false;
-	SDL_Color bgColor;
-	SDL_Color fgColor = Colors.DEFAULT_TEXT_COLOR;
+	SDL_Color bgColor = Colors.SELECTED;
+	SDL_Color fgColor = Colors.DEFAULT_TEXT;
 
-
-	this(string text, TTF_Font* font = null) {
+	this(string text, TTF_Font* f = null) {
 		this.text = text;
-		auto g = getGraphics();
-		if (!font) {
-			font = g.font;
+		auto g = getGraphics();	
+		if (!f) {
+			this.font = g.font;
 		}
-		texture = makeText(text)
+		texture = makeText(text, fgColor);
 		resize();
 	}
 
@@ -35,9 +34,11 @@ class Label : GameObject
 	}
 
 	private void resize() {
-		TTF_SizeText(font, text, &rect.w, &rect.h);
+		TTF_SizeText(font, text.ptr, &rect.w, &rect.h);
 		rect.h += 2*padding;
 		rect.w += 2*padding;
+		writeln("label width =", rect.w);
+		writeln("label height =", rect.h);
 
 		SDL_Rect textLocation = rect;
 		textLocation.x += padding;
@@ -89,7 +90,7 @@ class Label : GameObject
 			SDL_RenderFillRect(g.renderer, &rect);
 		}
 		// render the text
-		SDL_RenderCopy(g.renderer, texture, null, &textLocation);
+		SDL_RenderCopy(g.renderer, texture, null, &rect);
 	}
 
 }

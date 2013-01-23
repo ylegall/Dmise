@@ -52,12 +52,17 @@ struct GameInfo
 	int padding = 20;
 	string resourcesDir = "res/";
 	string libDir = "lib/";
+	//string fontName = "LiberationMono-Regular.ttf";
+	//string fontName = "digitek.ttf";
+	string fontName = "UbuntuMono-R.ttf";
 }
 
 struct Colors {
 	enum BLUE = SDL_Color(0, 128, 255);
 	enum DARK_GRAY = SDL_Color(64, 64, 64);
-	enum DEFAULT_TEXT_COLOR = SDL_Color(255,255,255);
+	enum DEFAULT_TEXT = SDL_Color(255,255,255);
+	enum SELECTED = SDL_Color(0,128,255);
+	enum BACKGROUND = SDL_Color(0, 0, 0);
 }
 
 /**
