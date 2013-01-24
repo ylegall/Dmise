@@ -1,4 +1,3 @@
-
 module prototype.main;
 
 import prototype.core;
@@ -16,9 +15,9 @@ pragma(lib, "dl");
 private
 {
 	SDL_Renderer* renderer;
-    bool isRunning;
-    Game game;
-    Graphics graphics;
+	bool isRunning;
+	Game game;
+	Graphics graphics;
 }
 
 package {
@@ -42,10 +41,10 @@ private auto init()
 	graphics.window = SDL_CreateWindow( 
 		gameInfo.name.ptr,              //    window title
 		SDL_WINDOWPOS_UNDEFINED,        //    initial x position
-	    SDL_WINDOWPOS_UNDEFINED,        //    initial y position
-	    gameInfo.width,                 //    width, in pixels
-	    gameInfo.height,                //    height, in pixels
-	    SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL //|SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS|SDL_WINDOW_MAXIMIZED
+		SDL_WINDOWPOS_UNDEFINED,        //    initial y position
+		gameInfo.width,                 //    width, in pixels
+		gameInfo.height,                //    height, in pixels
+		SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL //|SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS|SDL_WINDOW_MAXIMIZED
     );
 
     graphics.renderer = SDL_CreateRenderer(graphics.window, -1, SDL_RENDERER_ACCELERATED);
