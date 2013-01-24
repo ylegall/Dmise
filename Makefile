@@ -1,5 +1,5 @@
 
-NAME=prototype
+NAME=dmise
 DC=dmd
 INCDIR=include
 LIBDIR=lib

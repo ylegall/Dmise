@@ -21,15 +21,23 @@ public
 	}
 }
 
+interface Drawable
+{
+	void draw(Graphics g);
+}
+
+interface Updateable
+{
+	void update(real delta);
+}
+
 /**
  *  All game objects will have the following functions:
  */
-interface GameObject
+interface GameObject : Drawable, Updateable
 {
 	bool isAlive();
 	void onEvent(SDL_Event event);
-	void update(double delta);
-	void draw(Graphics g);
 }
 
 /**

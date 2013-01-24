@@ -80,7 +80,7 @@ private auto run()
 	debug writeln("entering main loop");
     
     isRunning = true;
-    double delta;
+    real delta;
     SDL_Event event;
 
     while (game.isAlive()) {

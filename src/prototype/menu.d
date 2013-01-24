@@ -128,7 +128,7 @@ class Menu : GameState
 		return isRunning;
 	}
 
-	void update(double delta) {
+	void update(real delta) {
 
 	}
 

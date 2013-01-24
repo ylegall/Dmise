@@ -40,7 +40,7 @@ struct Game
 		}
 	}
 
-	void update(double delta)
+	void update(real delta)
 	{
 		checkAlive();
 	}

@@ -6,17 +6,25 @@ import prototype.core;
 import std.traits;
 import std.algorithm;
 
-
+/**
+ * center a rectangle in the main window
+ */
 auto centerHorizontal(ref SDL_Rect rect)
 {
 	rect.x = (prototype.core.gameInfo.width)/2 - rect.w/2;
 }
 
+/**
+ * set the current render color
+ */
 auto setColor(SDL_Renderer* r, SDL_Color c, ubyte a=255)
 {
 	SDL_SetRenderDrawColor(r, c.r, c.g, c.b, a);
 }
 
+/**
+ * return the current renderer color.
+ */
 auto getColor(SDL_Renderer* r)
 {
 	SDL_Color c;
@@ -43,6 +51,14 @@ auto makeText(string message, SDL_Color fgColor, SDL_Color bgColor = Colors.BACK
 
 	assert(surface, "could not render surface");
 	return makeTexture(g, surface);
+}
+
+T clamp(R, T=real)(R val, T low=0.0, T high=1.0)
+	if (is(R:T) && isNumeric!T)
+{
+	if (val > high) return high;
+	if (val < low) return low;
+	return cast(T)val;
 }
 
 /**
