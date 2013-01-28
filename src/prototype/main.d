@@ -2,6 +2,7 @@ module prototype.main;
 
 import prototype.core;
 
+
 debug
 {
 	import std.stdio;
@@ -20,7 +21,8 @@ private
 	Graphics graphics;
 }
 
-package {
+package
+{
 	GameInfo gameInfo;
 }
 
@@ -63,7 +65,7 @@ private auto init()
 	status = TTF_Init();
 	enforce(status == 0, "TTF_Init failed.");
 
-	graphics.font = TTF_OpenFont((gameInfo.resourcesDir ~ "fonts/" ~ gameInfo.fontName).ptr, 22);
+	graphics.font = TTF_OpenFont((gameInfo.resourcesDir ~ "fonts/" ~ gameInfo.fontName).ptr, 24);
 	if (!graphics.font) {
 	    writefln("TTF_OpenFont failed: %s", TTF_GetError());
 	    assert(false);
@@ -73,18 +75,27 @@ private auto init()
     game.init();
 }
 
+private auto delay(long elapsed)
+{
+	//writeln(elapsed);
+	auto remaining = max(2, 17 - elapsed);
+	//debug writeln("sleeping for ", remaining);
+	SDL_Delay(cast(uint)remaining);
+}
+
 // main game loop
 private auto run()
 {
 	debug writeln("entering main loop");
     
     isRunning = true;
-    real delta;
     SDL_Event event;
+    StopWatch timer;
 
+    timer.start();
     while (game.isAlive()) {
         if (SDL_PollEvent(&event)) {
-        	debug writeln("received event type: ", event.type);
+        	//debug writeln("received event type: ", event.type);
             if (event.type == SDL_QUIT) {
             	game.shutdown();
             	break;
@@ -92,12 +103,20 @@ private auto run()
 	        game.onEvent(event);
         }
 
-        game.update(delta);
+        timer.stop();
+        auto elapsed = timer.peek().msecs;
+        game.update(elapsed);
+        timer.reset();
+        timer.start();
         game.draw(graphics);
+        delay(elapsed);
         SDL_RenderPresent(graphics.renderer);
     }
 }
 
+/**
+Get the global graphics context.
+*/
 auto getGraphics() {
 	return graphics;
 }

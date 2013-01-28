@@ -7,7 +7,7 @@ import std.traits;
 import std.algorithm;
 
 /**
- * center a rectangle in the main window
+center a rectangle in the main window
  */
 auto centerHorizontal(ref SDL_Rect rect)
 {
@@ -15,7 +15,7 @@ auto centerHorizontal(ref SDL_Rect rect)
 }
 
 /**
- * set the current render color
+set the current renderer color
  */
 auto setColor(SDL_Renderer* r, SDL_Color c, ubyte a=255)
 {
@@ -23,7 +23,7 @@ auto setColor(SDL_Renderer* r, SDL_Color c, ubyte a=255)
 }
 
 /**
- * return the current renderer color.
+get the current renderer color.
  */
 auto getColor(SDL_Renderer* r)
 {
@@ -34,8 +34,7 @@ auto getColor(SDL_Renderer* r)
 }
 
 /**
- * utility a texture for text.
- * TODO
+utility to make a texture for text.
  */
 auto makeText(string message, SDL_Color fgColor, SDL_Color bgColor = Colors.BACKGROUND )
 {
@@ -53,16 +52,19 @@ auto makeText(string message, SDL_Color fgColor, SDL_Color bgColor = Colors.BACK
 	return makeTexture(g, surface);
 }
 
-T clamp(R, T=real)(R val, T low=0.0, T high=1.0)
-	if (is(R:T) && isNumeric!T)
+/**
+ utility to clamp a value between low and high values
+ */
+auto clamp(T)(T val, T low=0, T high=1)
+	if(isNumeric!T)
 {
 	if (val > high) return high;
 	if (val < low) return low;
-	return cast(T)val;
+	return val;
 }
 
 /**
- * utility to make a texture from a surface
+ tility to make a texture from a surface
  */
 auto makeTexture(Graphics g, SDL_Surface* surface)
 {
@@ -106,4 +108,32 @@ struct Stack(T)
 	auto length() { return size; }
 	
 	bool isEmpty() { return size == 0; }
+}
+
+/**
+
+*/
+struct FramerateManager
+{
+	private {
+		StopWatch timer;
+		bool isRunning;
+		long targetFramerate;
+	}
+
+	this(long targetFramerate) {
+		this.targetFramerate = targetFramerate;
+	}
+
+	void start() {
+		isRunning = true;
+		timer.start();
+	}
+
+	auto elapsed() {
+		timer.stop();
+		auto retval = timer.peek().msecs;
+		timer.start();
+		return retval;
+	}
 }

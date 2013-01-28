@@ -11,10 +11,14 @@ public
 	import prototype.game;
 	import prototype.menu;
 	import prototype.util;
+	import prototype.animation.ease;
+	import prototype.animation.animation;
 
 	//import std.conv;
 	import std.exception;
 	import std.c.stdlib;
+	import std.datetime;
+	import std.algorithm;
 	debug
 	{
 		import std.stdio;
@@ -28,11 +32,11 @@ interface Drawable
 
 interface Updateable
 {
-	void update(real delta);
+	void update(long delta);
 }
 
 /**
- *  All game objects will have the following functions:
+All game objects will have the following functions:
  */
 interface GameObject : Drawable, Updateable
 {
@@ -41,7 +45,7 @@ interface GameObject : Drawable, Updateable
 }
 
 /**
- * 
+
  */
 abstract class GameState : GameObject
 {
@@ -50,7 +54,7 @@ abstract class GameState : GameObject
 }
 
 /**
- * Holds information and meta data about  the game
+Holds game information and metadata.
  */
 struct GameInfo
 {
@@ -60,11 +64,14 @@ struct GameInfo
 	int padding = 20;
 	string resourcesDir = "res/";
 	string libDir = "lib/";
-	//string fontName = "LiberationMono-Regular.ttf";
 	//string fontName = "digitek.ttf";
 	string fontName = "UbuntuMono-R.ttf";
 }
 
+/**
+Global colors.
+TODO: read from configuration?
+ */
 struct Colors {
 	enum BLUE = SDL_Color(0, 128, 255);
 	enum DARK_GRAY = SDL_Color(64, 64, 64);
@@ -74,7 +81,7 @@ struct Colors {
 }
 
 /**
- * Holds references to types needed for graphics
+Holds references to types needed for graphics
  */
 struct Graphics
 {

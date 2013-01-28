@@ -4,10 +4,12 @@ module prototype.game;
 import prototype.core;
 
 
+/**
+
+*/
 struct Game
 {
-	private
-	{
+	private {
 		bool alive;
 		GameStack!4 stack;
 	}
@@ -19,34 +21,30 @@ struct Game
 		}
 	}
 
-	void init()
-	{
+	void init() {
 		stack.push(new Menu());
 		assert(stack.top, "stack top should not be null");
 		alive = true;
 	}
 
-	bool isAlive()
-	{
+	bool isAlive() {
 		return alive;
 	}
 
-	/**
-	 * handles SDL events such as mouse, keyboard, etc.
-	 */
 	void onEvent(SDL_Event event) {
 		if (!stack.isEmpty()) {
 			stack.top.onEvent(event);
 		}
 	}
 
-	void update(real delta)
-	{
+	void update(long delta){
 		checkAlive();
+		if (!stack.isEmpty) {
+			stack.top.update(delta);
+		}
 	}
 
-	void draw(Graphics g)
-	{
+	void draw(Graphics g) {
 		if (!stack.isEmpty()) {
 			stack.top.draw(g);
 		}

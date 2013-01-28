@@ -1,24 +1,32 @@
 
 module prototype.animation.animation;
 
+import prototype.util;
+import prototype.animation.ease;
+import prototype.animation.interpolate;
+
 import core.time;
+import std.stdio;
 
 /**
-
+A simple animation between 2 values.
 */
 class Animation(T)
 {
 	private {
 		Ease ease;
-		T To;
-		T From;
-		bool isRunning
-		T value;
+		T to;
+		T from;
+		bool isRunning;
+		T* value;
 		long duration;
+		long elapsed;
+		private void delegate(Animation!T) onFinish;
 	}
 
-	this() {
-
+	this(T* value) {
+		assert(value);
+		this.value = value;
 	}
 
 	auto setTo(T to) {
@@ -34,7 +42,14 @@ class Animation(T)
 	}
 
 	auto setDuration(Duration duration) {
-		this.duration = duration.get!"msecs";
+		this.duration = duration.fracSec.msecs;
+	}
+	auto setDuration(long duration) {
+		this.duration = duration;
+	}
+
+	auto setOnFinish(void delegate(Animation!T) fn) {
+		this.onFinish = fn;
 	}
 
 	void start() {
@@ -51,6 +66,11 @@ class Animation(T)
 		isRunning = false;
 	}
 
+	void reset() {
+		elapsed = 0;
+		*value = to;
+	}
+
 	void pause() {
 		if (!isRunning) {
 			return;
@@ -58,49 +78,75 @@ class Animation(T)
 		isRunning = false;
 	}
 
-	void update(real delta) {
+	void update(long delta) {
 		if (isRunning) {
-
+			elapsed += delta;
+			elapsed = clamp(elapsed, 0L, duration);
+			real percentComplete = elapsed/(cast(real)duration);
+			if (percentComplete >= 1.0) {
+				isRunning = false;
+				writeln("BEFORE ON FINISH");
+				onFinish(this);
+				writeln("AFTER ON FINISH");
+			} else {
+				percentComplete = ease.ease(percentComplete);
+				*value = scale!T(to, from, percentComplete);
+			}
 		}
+	}
+
+	auto getValue() {
+		return value;
 	}
 }
 
 /**
-Animation builder class
+Utility class for building animations.
 */
 class AnimationBuilder(T)
 {
 	Animation!T animation;
 
-	private this() {
-		animation = new Animation();
+	private this(T* value) {
+		animation = new Animation!T(value);
 	}
 
-	static auto create() {
-		AnimationBuilder builder = new AnimationBuilder();
-		return builder;
+	static auto create(T* value) {
+		assert(value);
+		return new AnimationBuilder(value);
 	}
 
-	auto from(T start) {
-		assert(animation)
+	AnimationBuilder from(T start) {
+		assert(animation);
 		animation.setFrom(start);
 		return this;
 	}
 
-	auto to(T to) {
+	AnimationBuilder to(T to) {
 		animation.setTo(to);
 		return this;
 	}
 
 	auto lasting(Duration duration) {
 		animation.setDuration(duration);
+		return this;
+	}
+	auto lasting(long msecs) {
+		animation.setDuration(msecs);
+		return this;
 	}
 
 	auto ease(Ease e) {
 		animation.setEase(e);
+		return this;
 	}
 
-	auto create() {
-		auto retval = this.animation
+	auto onFinish(void delegate(Animation!T) fn) {
+		animation.setOnFinish(fn);
+		return this;
+	}
+
+	auto get() {
+		return animation;
 	}
 }

@@ -28,7 +28,6 @@ private T scaleImpl(T)(T from, T to, real time)
 	}
 	return copy;
 }
-unittest
 
 
 private T scaleImpl(T)(T from, T to, real time)

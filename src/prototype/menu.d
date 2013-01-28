@@ -6,19 +6,50 @@ import prototype.ui.label;
 
 import std.algorithm;
 
-// TODO: make this a button
+/**
+A menu item has a label, an action, and an animation
+*/
 struct MenuItem {
 	alias void delegate() Action;
 	Label label;
 	Action action;
+	Animation!SDL_Rect sizeAnimation;
+	Animation!SDL_Color colorAnimation;
+
 	this(string str, Action action) {
 		label = new Label(str);
 		this.action = action;
+
+		// create the color animation:
+		colorAnimation = AnimationBuilder!(SDL_Color).create(&label.bgColor)
+			.from(Colors.SELECTED)
+			.to(Colors.DARK_GRAY)
+			.lasting(320)
+			.ease(CUBE)
+			.onFinish(&animationDone)
+			.get();
+	}
+
+	void update(long delta) {
+		colorAnimation.update(delta);
+		label.update(delta);
+	}
+
+	void draw(Graphics g) {
+		label.draw(g);
+	}
+
+	void animationDone(Animation!SDL_Color a) {
+		writeln("IN ON FINISH");
+		//label.setBgColor(Colors.SELECTED);
+		//assert(label !is null, "label was null");
+		//writeln("COLOR = ", label.bgColor);
+		//label.bgColor = SDL_Color(64, 64, 64);
 	}
 }
 
 /**
- * 
+
  */
 class Menu : GameState
 {
@@ -58,9 +89,12 @@ class Menu : GameState
 
 		auto i = 0;
 		foreach (item; menuItems) {
-			item.label.setLocation(0, menuRect.y + i * 35);
+			item.label.setLocation(16, menuRect.y + i * 35);
+			item.label.width = 300;
+			item.label.height = 30;
 			++i;
 		}
+		menuItems[0].label.bgColor = Colors.SELECTED;
 	}
 
 	~this() {
@@ -114,22 +148,34 @@ class Menu : GameState
 
 	auto selectNext() {
 		index += 1;
-		index  = min(menuItems.length - 1, index);
-		debug writeln("selected text = ", menuItems[index]);
+		if (index >= menuItems.length) {
+			index = cast(int)(menuItems.length - 1);
+		} else {
+			menuItems[index - 1].colorAnimation.stop();
+			menuItems[index - 1].colorAnimation.reset();
+			menuItems[index].colorAnimation.start();
+		}
 	}
 
 	auto selectPrev() {
 		index -= 1;
-		index  = max(0, index);
-		debug writeln("selected text = ", menuItems[index]);
+		if (index < 0) {
+			index = 0;
+		} else {
+			menuItems[index + 1].colorAnimation.stop();
+			menuItems[index + 1].colorAnimation.reset();
+			menuItems[index].colorAnimation.start();
+		}
 	}
 
 	bool isAlive() {
 		return isRunning;
 	}
 
-	void update(real delta) {
-
+	void update(long delta) {
+		foreach (item; menuItems) {
+			item.update(delta);
+		}
 	}
 
 	void draw(Graphics g) {
@@ -141,12 +187,12 @@ class Menu : GameState
 		// TODO: render background:
 
 		// render the menu box:
-		setColor(g.renderer, Colors.DARK_GRAY, 150);
-		SDL_RenderFillRect(g.renderer, &menuRect);
+		//setColor(g.renderer, Colors.DARK_GRAY, 150);
+		//SDL_RenderFillRect(g.renderer, &menuRect);
 
 		// render the menuItems
 		foreach (item; menuItems) {
-			item.label.draw(g);
+			item.draw(g);
 		}
 
 	}
