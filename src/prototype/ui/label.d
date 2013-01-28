@@ -11,12 +11,12 @@ class Label : GameObject
 	private {
 		string text;
 		int padding = 4;
-		SDL_Rect rect;
 		SDL_Rect textLocation;
 		TTF_Font* font;
 		SDL_Texture* texture;
 	}
 
+	SDL_Rect rect;
 	bool hasBackground = true;
 	bool hasBorder = false;
 	SDL_Color bgColor = Colors.DARK_GRAY;
@@ -42,7 +42,6 @@ class Label : GameObject
 		rect.w += 2*padding;
 		textLocation.x += padding;
 		textLocation.y += padding;
-		rect = textLocation;
 	}
 
 	bool isAlive() {
@@ -63,8 +62,10 @@ class Label : GameObject
 	}
 
 	void setLocation(int x, int y) {
-		rect.x = textLocation.x = x;
-		rect.y = textLocation.y = y;
+		rect.x = x;
+		rect.y = y;
+		textLocation.x = rect.x + padding;
+		textLocation.y = rect.y + padding;
 	}
 
 	void setSize(int width, int height) {

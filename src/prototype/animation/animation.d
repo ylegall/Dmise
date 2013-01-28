@@ -8,11 +8,14 @@ import prototype.animation.interpolate;
 import core.time;
 import std.stdio;
 
+
 /**
 A simple animation between 2 values.
 */
 class Animation(T)
 {
+	alias void delegate(Animation!T) AnimationEvent;
+
 	private {
 		Ease ease;
 		T to;
@@ -21,7 +24,8 @@ class Animation(T)
 		T* value;
 		long duration;
 		long elapsed;
-		private void delegate(Animation!T) onFinish;
+		AnimationEvent onUpdate;
+		AnimationEvent onFinish;
 	}
 
 	this(T* value) {
@@ -48,7 +52,10 @@ class Animation(T)
 		this.duration = duration;
 	}
 
-	auto setOnFinish(void delegate(Animation!T) fn) {
+	auto setOnFinish(AnimationEvent fn) {
+		this.onFinish = fn;
+	}
+	auto setOnUpdate(AnimationEvent fn) {
 		this.onFinish = fn;
 	}
 
@@ -60,6 +67,11 @@ class Animation(T)
 	}
 
 	void stop() {
+		isRunning = false;
+		reset();
+	}
+
+	void pause() {
 		if (!isRunning) {
 			return;
 		}
@@ -68,7 +80,7 @@ class Animation(T)
 
 	void reset() {
 		elapsed = 0;
-		*value = to;
+		*value = from;
 	}
 
 	void pause() {
@@ -85,12 +97,10 @@ class Animation(T)
 			real percentComplete = elapsed/(cast(real)duration);
 			if (percentComplete >= 1.0) {
 				isRunning = false;
-				writeln("BEFORE ON FINISH");
-				onFinish(this);
-				writeln("AFTER ON FINISH");
+				if (onFinish) onFinish(this);
 			} else {
 				percentComplete = ease.ease(percentComplete);
-				*value = scale!T(to, from, percentComplete);
+				*value = scale!T(from, to, percentComplete);
 			}
 		}
 	}
@@ -105,6 +115,7 @@ Utility class for building animations.
 */
 class AnimationBuilder(T)
 {
+	alias void delegate(Animation!T) AnimationEvent;
 	Animation!T animation;
 
 	private this(T* value) {
@@ -141,8 +152,13 @@ class AnimationBuilder(T)
 		return this;
 	}
 
-	auto onFinish(void delegate(Animation!T) fn) {
+	auto onFinish(AnimationEvent fn) {
 		animation.setOnFinish(fn);
+		return this;
+	}
+
+	auto onUpdate(AnimationEvent fn) {
+		animation.setOnUpdate(fn);
 		return this;
 	}
 

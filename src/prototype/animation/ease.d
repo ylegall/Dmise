@@ -83,5 +83,5 @@ enum ELASTIC = Ease(function real(real t) {
 	return scale * wave;
 });
 enum BOUNCE = Ease(function real(real t) {
-	return abs(cos(3 * PI * t * t) * (1 - t));
+	return abs(cos( (3*PI * t*t) * (1 - t) ));
 });
