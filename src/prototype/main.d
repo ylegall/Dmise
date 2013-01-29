@@ -111,6 +111,8 @@ private auto run()
         game.draw(graphics);
         delay(elapsed);
         SDL_RenderPresent(graphics.renderer);
+        setColor(graphics.renderer, Colors.BACKGROUND);
+        SDL_RenderClear(graphics.renderer);
     }
 }
 

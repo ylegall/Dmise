@@ -14,7 +14,7 @@ struct MenuItem {
 	Label label;
 	Action action;
 	Animation!SDL_Color colorAnimation;
-	//Animation!int sizeAnimation;
+	Animation!int sizeAnimation;
 
 	this(string str, Action action) {
 		label = new Label(str);
@@ -25,21 +25,21 @@ struct MenuItem {
 			.from(Colors.DARK_GRAY)
 			.to(Colors.SELECTED)
 			.lasting(200)
-			.ease(CUBE)
+			.ease(Ease(CUBE))
 			.get();
 
-		//// create the size animation:
-		//sizeAnimation = AnimationBuilder!(int).create(&label.rect.h)
-		//	.from(label.rect.h)
-		//	.to(label.rect.h + 10)
-		//	.lasting(200)
-		//	.ease(CUBE)
-		//	.get();
+		// create the size animation:
+		sizeAnimation = AnimationBuilder!(int).create(&label.textLocation.x)
+			.from(20)
+			.to(36)
+			.lasting(200)
+			.ease(Ease(CUBE, EaseMode.OUT))
+			.get();
 	}
 
 	void update(long delta) {
 		colorAnimation.update(delta);
-		//sizeAnimation.update(delta);
+		if (sizeAnimation) sizeAnimation.update(delta);
 		label.update(delta);
 	}
 
@@ -91,7 +91,7 @@ class Menu : GameState
 		foreach (item; menuItems) {
 			item.label.setLocation(16, menuRect.y + i * 40);
 			item.label.width = 500;
-			item.label.height = 30;
+			item.label.height = 36;
 			++i;
 		}
 		menuItems[0].label.bgColor = Colors.SELECTED;
@@ -149,9 +149,9 @@ class Menu : GameState
 			index = cast(int)(menuItems.length - 1);
 		} else {
 			menuItems[index - 1].colorAnimation.stop();
-			//menuItems[index - 1].sizeAnimation.stop();
+			menuItems[index - 1].sizeAnimation.stop();
 			menuItems[index].colorAnimation.start();
-			//menuItems[index].sizeAnimation.start();
+			menuItems[index].sizeAnimation.start();
 		}
 	}
 
@@ -161,9 +161,9 @@ class Menu : GameState
 			index = 0;
 		} else {
 			menuItems[index + 1].colorAnimation.stop();
-			//menuItems[index - 1].sizeAnimation.stop();
+			menuItems[index + 1].sizeAnimation.stop();
 			menuItems[index].colorAnimation.start();
-			//menuItems[index].sizeAnimation.start();
+			menuItems[index].sizeAnimation.start();
 		}
 	}
 

@@ -10,12 +10,12 @@ class Label : GameObject
 {
 	private {
 		string text;
-		int padding = 4;
-		SDL_Rect textLocation;
 		TTF_Font* font;
 		SDL_Texture* texture;
 	}
 
+	int padding = 4;
+	SDL_Rect textLocation;
 	SDL_Rect rect;
 	bool hasBackground = true;
 	bool hasBorder = false;
@@ -38,8 +38,8 @@ class Label : GameObject
 
 	private void resize() {
 		TTF_SizeText(font, text.ptr, &textLocation.w, &textLocation.h);
-		rect.h += 2*padding;
-		rect.w += 2*padding;
+		rect.h = textLocation.h + 2*padding;
+		rect.w = textLocation.w + 2*padding;
 		textLocation.x += padding;
 		textLocation.y += padding;
 	}
