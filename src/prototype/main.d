@@ -21,9 +21,12 @@ private
 	Graphics graphics;
 }
 
-package
-{
+package {
 	GameInfo gameInfo;
+}
+
+auto getWindowSize() {
+	return tuple(gameInfo.width, gameInfo.height);
 }
 
 // initialize SDL systems:
@@ -40,7 +43,7 @@ private auto init()
 	debug writeln("done.");
 
 	// Create an application window with the following settings:
-	graphics.window = SDL_CreateWindow( 
+	graphics.window = SDL_CreateWindow(
 		gameInfo.name.ptr,              //    window title
 		SDL_WINDOWPOS_UNDEFINED,        //    initial x position
 		SDL_WINDOWPOS_UNDEFINED,        //    initial y position
@@ -87,7 +90,7 @@ private auto delay(long elapsed)
 private auto run()
 {
 	debug writeln("entering main loop");
-    
+
     isRunning = true;
     SDL_Event event;
     StopWatch timer;

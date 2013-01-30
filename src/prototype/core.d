@@ -15,10 +15,11 @@ public
 	import prototype.animation.animation;
 
 	//import std.conv;
-	import std.exception;
+	import std.algorithm;
 	import std.c.stdlib;
 	import std.datetime;
-	import std.algorithm;
+	import std.exception;
+	import std.typecons;
 	debug
 	{
 		import std.stdio;
@@ -131,3 +132,7 @@ struct GameStack(int Size=4)
 		return index == 0;
 	}
 }
+
+alias Tuple!(int,int) Point;
+alias Tuple!(int,int) Dimension;
+
