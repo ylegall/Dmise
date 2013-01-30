@@ -1,4 +1,3 @@
-
 module prototype.ui.container;
 
 import prototype.core;
@@ -103,9 +102,13 @@ class Container : IContainer
 		foreach (child; children) {
 			x += padding;
 			child.setLocation(x,y);
-			child.setHeight(childHeight);
+			if (sizeMode == sizeMode.FILL_PARENT) {
+				child.setHeight(childHeight);
+				x += childHeight;
+			} else {
+				x += child.getHeight();
+			}
 			child.setWidth(rect.w);
-			x += childHeight;
 		}
 	}
 
