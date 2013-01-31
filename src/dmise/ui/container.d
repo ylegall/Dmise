@@ -1,6 +1,6 @@
-module prototype.ui.container;
+module dmise.ui.container;
 
-import prototype.core;
+import dmise.core;
 
 
 /**
@@ -71,6 +71,7 @@ class Container : IContainer
 	private {
 		SDL_Rect rect;
 		LayoutMode layoutMode;
+		SizeMode sizeMode;
 		Container parent;
 		Container[] children;
 	}
@@ -102,7 +103,7 @@ class Container : IContainer
 		foreach (child; children) {
 			x += padding;
 			child.setLocation(x,y);
-			if (sizeMode == sizeMode.FILL_PARENT) {
+			if (sizeMode == SizeMode.FILL_PARENT) {
 				child.setHeight(childHeight);
 				x += childHeight;
 			} else {

@@ -1,7 +1,7 @@
 
-module prototype.util;
+module dmise.util;
 
-import prototype.core;
+import dmise.core;
 
 import std.traits;
 import std.algorithm;
@@ -11,7 +11,7 @@ center a rectangle in the main window
  */
 auto centerHorizontal(ref SDL_Rect rect)
 {
-	rect.x = (prototype.core.gameInfo.width)/2 - rect.w/2;
+	rect.x = (dmise.core.gameInfo.width)/2 - rect.w/2;
 }
 
 /**
@@ -106,7 +106,7 @@ struct Stack(T)
 
 	@property
 	auto length() { return size; }
-	
+
 	bool isEmpty() { return size == 0; }
 }
 

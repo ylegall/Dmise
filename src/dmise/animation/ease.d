@@ -1,5 +1,5 @@
 
-module prototype.animation.ease;
+module dmise.animation.ease;
 
 import std.math;
 import std.traits;

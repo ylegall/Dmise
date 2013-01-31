@@ -1,5 +1,5 @@
 
-module prototype.animation.interpolate;
+module dmise.animation.interpolate;
 
 import std.traits;
 

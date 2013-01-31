@@ -1,6 +1,6 @@
-module prototype.types;
+module dmise.types;
 
-import prototype.core;
+import dmise.core;
 
 /**
 A 2D point in space.

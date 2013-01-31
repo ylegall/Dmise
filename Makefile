@@ -3,7 +3,7 @@ NAME=dmise
 DC=dmd
 INCDIR=include
 LIBDIR=lib
-SRCDIR=src/prototype
+SRCDIR=src/dmise
 BINDIR=bin
 
 LDFLAGS=-L-L$(LIBDIR)

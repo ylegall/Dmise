@@ -1,7 +1,7 @@
 
-module prototype.game;
+module dmise.game;
 
-import prototype.core;
+import dmise.core;
 
 
 /**

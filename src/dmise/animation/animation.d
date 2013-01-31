@@ -1,9 +1,9 @@
 
-module prototype.animation.animation;
+module dmise.animation.animation;
 
-import prototype.util;
-import prototype.animation.ease;
-import prototype.animation.interpolate;
+import dmise.util;
+import dmise.animation.ease;
+import dmise.animation.interpolate;
 
 import core.time;
 import std.stdio;
@@ -36,7 +36,7 @@ class Animation(T)
 	auto setTo(T to) {
 		this.to = to;
 	}
-	
+
 	auto setFrom(T from) {
 		this.from = from;
 	}
@@ -86,7 +86,7 @@ class Animation(T)
 	void pause() {
 		if (!isRunning) {
 			return;
-		}		
+		}
 		isRunning = false;
 	}
 

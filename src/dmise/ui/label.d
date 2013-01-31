@@ -1,7 +1,7 @@
 
-module prototype.ui.label;
+module dmise.ui.label;
 
-import prototype.core;
+import dmise.core;
 
 /**
 A simple label for displaying text on a rectanglular background.

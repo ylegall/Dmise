@@ -1,8 +1,8 @@
 
-module prototype.menu;
+module dmise.menu;
 
-import prototype.core;
-import prototype.ui.label;
+import dmise.core;
+import dmise.ui.label;
 
 import std.algorithm;
 

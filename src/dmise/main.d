@@ -1,6 +1,6 @@
-module prototype.main;
+module dmise.main;
 
-import prototype.core;
+import dmise.core;
 
 
 debug

@@ -1,5 +1,5 @@
 
-module prototype.core;
+module dmise.core;
 
 public
 {
@@ -7,12 +7,12 @@ public
 	import derelict.sdl2.image;
 	import derelict.sdl2.ttf;
 
-	import prototype.main;
-	import prototype.game;
-	import prototype.menu;
-	import prototype.util;
-	import prototype.animation.ease;
-	import prototype.animation.animation;
+	import dmise.main;
+	import dmise.game;
+	import dmise.menu;
+	import dmise.util;
+	import dmise.animation.ease;
+	import dmise.animation.animation;
 
 	//import std.conv;
 	import std.algorithm;
