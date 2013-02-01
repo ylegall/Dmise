@@ -59,10 +59,21 @@ private auto init()
 	status = IMG_Init(flags);
 	if ((status & flags) != flags) {
 		write("IMG_Init failed: "); printf(IMG_GetError()); writeln();
+		assert(false, "IMG_Init failed");
 	}
-	enforce((status & flags) == flags, "IMG_Init failed: ");
 
-	// initialize SDL_Audio
+	// initialize SDL_Mixer
+	flags = MIX_INIT_MP3;
+	status = Mix_Init(flags);
+	if((status & flags) != flags) {
+		write("MIX_Init failed: "); printf(IMG_GetError()); writeln();
+		assert(false, "MIX_Init failed");
+	}
+	// open 22.05KHz, signed 16bit, system byte order, stereo audio, using 1024 byte chunks
+	if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+	    printf("Mix_OpenAudio: %s\n", Mix_GetError());
+	    exit(2);
+	}
 
 	// initialize font SDL_TTF:
 	status = TTF_Init();
@@ -73,7 +84,6 @@ private auto init()
 	    writefln("TTF_OpenFont failed: %s", TTF_GetError());
 	    assert(false);
 	}
-    // handle error
 
     game.init();
 }
@@ -131,6 +141,10 @@ private auto shutdown()
 {
 	writeln("shutting down...");
 	TTF_Quit();
+	
+	Mix_CloseAudio();
+	Mix_Quit();
+	
 	IMG_Quit();
 	SDL_DestroyRenderer(graphics.renderer);
 	SDL_DestroyWindow(graphics.window);
@@ -144,6 +158,7 @@ int main(string[] args)
 	//DerelictSDL2Image.load();
 	DerelictSDL2Image.load("lib/libSDL2_image.so");
 	DerelictSDL2ttf.load("lib/libSDL2_ttf.so");
+	DerelictSDL2Mixer.load("lib/libSDL2_mixer.so");
 
 	init();
 	run();
