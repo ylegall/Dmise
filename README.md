@@ -8,9 +8,9 @@ Dependencies:
 -------------
 Building requries the following libraries:
 
-* [SDL_ttf 2.0](http://www.libsdl.org/projects/SDL_ttf/).
+* [SDL_ttf](http://www.libsdl.org/projects/SDL_ttf/).
 * [SDL_image](http://www.libsdl.org/projects/SDL_image/).
-* [SDL_mixer 1.2](http://www.libsdl.org/projects/SDL_mixer/).
+* [SDL_mixer](http://www.libsdl.org/projects/SDL_mixer/).
 
 
 TODO
