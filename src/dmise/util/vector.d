@@ -50,8 +50,8 @@ struct Vector2D(T=real)
 	@return the magnitude as a real.
 	*/
 	const auto magnitude() {
-        return sqrt(this.dot(this));
-    }
+		return sqrt(this.dot(this));
+	}
 
 	/**
 	Calculate the dot product of this Vector2D with another.
@@ -75,26 +75,26 @@ struct Vector2D(T=real)
 	/**
 	Get the Vector that is perpindicular to this Vector.
 	*/
-    const auto perpendicular() {
-        return new Vector2D(y, x);
-    }
+	const auto perpendicular() {
+		return new Vector2D(y, x);
+	}
 
-    /**
+	/**
 	Get the signed angle between 2 vectors.
 	@param v1 the first vector
 	@param v2 the second vector
 	@return the signed angle in radians between the two vectors
 	*/
-    static auto signedAngle(Vector2D!T v1, Vector2D!T v2) {
-        auto perpDot = v1.x * v2.y - v1.y * v2.x;
-        return atan2(perpDot, v1.dot(v2));
-    }
+	static auto signedAngle(Vector2D!T v1, Vector2D!T v2) {
+		auto perpDot = v1.x * v2.y - v1.y * v2.x;
+		return atan2(perpDot, v1.dot(v2));
+	}
 
 	/**
 	Calculate the unit vector in the direction of this Vector2D.
 	*/
-    const auto direction() {
-        auto mag = magnitude();
-        return (mag) ? (this * (1.0/mag)) : new Vector2D!T();
-    }
+	const auto direction() {
+		auto mag = magnitude();
+		return (mag) ? (this * (1.0/mag)) : new Vector2D!T();
+	}
 }
