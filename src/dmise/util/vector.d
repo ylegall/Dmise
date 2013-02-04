@@ -10,7 +10,7 @@ struct Vector2D(T=real)
 {
 	T x, y;
 
-	this(T x = 0.0. T y = 0.0) {
+	this(T x = 0.0, T y = 0.0) {
 		this.x = x;
 		this.y = y;
 	}

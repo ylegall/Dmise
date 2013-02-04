@@ -1,10 +1,11 @@
 module dmise.ui.container;
 
 import dmise.core;
+import dmise.util.types;
 
 
 /**
-
+A simple container to control the layout of ui components.
 */
 interface IContainer : GameObject
 {
@@ -16,7 +17,7 @@ interface IContainer : GameObject
 	void setLocation(int x, int y);
 	Point getLocation();
 	void setSize(int w, int h);
-	Point getSize();
+	Size getSize();
 }
 
 enum LayoutMode
@@ -49,18 +50,17 @@ mixin template ContainerMixin()
 	}
 
 	Point getLocation() {
-		return tuple(rect.x, rect.y);
+		return Point(rect.x, rect.y);
 	}
 
 	void setSize(int w, int h) {
 		rect.w = w; rect.h = h;
 	}
 
-	Point getSize() {
-		return tuple(rect.w, rect.h);
+	Size getSize() {
+		return Size(rect.w, rect.h);
 	}
 }
-
 
 
 /**
@@ -68,6 +68,8 @@ mixin template ContainerMixin()
 */
 class Container : IContainer
 {
+	mixin ContainerMixin;
+
 	private {
 		SDL_Rect rect;
 		LayoutMode layoutMode;
@@ -134,8 +136,6 @@ class Container : IContainer
 	}
 
 	bool isAlive() { return true; }
-
-	mixin ContainerMixin;
 }
 
 

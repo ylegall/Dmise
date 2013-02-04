@@ -1,7 +1,7 @@
 
 module dmise.animation.animation;
 
-import dmise.util;
+import dmise.core;
 import dmise.animation.ease;
 import dmise.animation.interpolate;
 
