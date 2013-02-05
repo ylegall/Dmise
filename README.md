@@ -12,6 +12,75 @@ Building requries the following libraries:
 * [SDL_image](http://www.libsdl.org/projects/SDL_image/).
 * [SDL_mixer](http://www.libsdl.org/projects/SDL_mixer/).
 
+Building on GNU/Linux
+---------------------
+First download, build, and install all dependencies (SDL, SDL_ttf, SDL_image, DMD D compiler, Derelict3 SDL/D bindings.)
+
+SDL
+---
+
+```
+hg clone http://hg.libsdl.org/SDL/ -r c34a64af7751
+cd SDL
+./configure
+make
+make install
+```
+
+SDL_ttf
+---
+
+```
+hg clone http://hg.libsdl.org/SDL_ttf/ 0f39dfa3546e
+cd SDL_ttf
+./configure
+make
+make install
+```
+
+SDL_image
+---
+
+```
+hg clone http://hg.libsdl.org/SDL_image/ 18ab81286e51
+cd SDL_image
+./configure
+make
+make install
+```
+
+DMD
+---
+Download and install "dmd" from:
+http://dlang.org/download.html
+
+Derelict3
+---------
+Download and install Derelict3 SDL2 bindings for D:
+
+```
+git clone git://github.com/aldacron/Derelict3.git
+cd Derelict3/build
+rdmd build.d
+# rdmd might fail, try dmd
+# todo: better instructions here?
+```
+
+Dmise
+-----
+Download and build Dmise:
+
+```
+git clone git@github.com:ylegall/Dmise.git
+cd Dmise
+# Your path here may be different
+ln -s ../Derelict3/lib lib
+make
+```
 
 TODO
 ----
+* Which revisions of Dmise are most likely to build?
+* How to build SDL_mixer.
+* Give Dmise a TTF font in res/fonts
+* Give Dmise a splash image in res/images
