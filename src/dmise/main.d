@@ -71,7 +71,7 @@ private auto init()
 	//}
 	// open 22.05KHz, signed 16bit, system byte order, stereo audio, using 1024 byte chunks
 	if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
-	    printf("Mix_OpenAudio: %s\n", Mix_GetError());
+	    printf("Mix_OpenAudio failed: %s\n", Mix_GetError());
 	    exit(2);
 	}
 
