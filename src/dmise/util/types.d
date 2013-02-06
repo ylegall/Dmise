@@ -1,4 +1,4 @@
-module dmise.types;
+module dmise.util.types;
 
 import dmise.core;
 
