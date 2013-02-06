@@ -67,11 +67,15 @@ class Menu : GameState
 
 		SDL_Color fgColor = {0, 0, 0};
 		SDL_Color bgColor = {0, 255, 0};
+
+		Mix_Chunk* menuSound;
 	}
 
 	this() {
 		auto g = getGraphics();
 		SDL_Surface* surface = IMG_Load("res/images/logo.png");
+		menuSound = Mix_LoadWAV("res/sounds/beep.wav");
+
 		logoRect = SDL_Rect(0, 100, surface.w, surface.h);
 		menuRect = SDL_Rect(0, 200, gameInfo.width, 200);
 		centerHorizontal(logoRect);
@@ -99,6 +103,7 @@ class Menu : GameState
 
 	~this() {
 		SDL_DestroyTexture(logo);
+		Mix_FreeChunk(menuSound);
 		foreach (item; menuItems) {
 			delete item.label;
 		}
@@ -113,11 +118,13 @@ class Menu : GameState
 
 					case SDLK_DOWN:
 					case 's':
+						Mix_PlayChannel(-1, menuSound, 0);
 						selectNext();
 						break;
 
 					case SDLK_UP:
 					case 'w':
+						Mix_PlayChannel(-1, menuSound, 0);
 						selectPrev();
 						break;
 

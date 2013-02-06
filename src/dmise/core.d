@@ -16,11 +16,12 @@ public
 
 	//import std.conv;
 
-	import std.traits;
 	import std.algorithm;
 	import std.c.stdlib;
 	import std.datetime;
 	import std.exception;
+	import std.conv;
+	import std.traits;
 	import std.typecons;
 	debug
 	{

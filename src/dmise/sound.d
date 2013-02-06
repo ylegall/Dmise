@@ -1,7 +1,15 @@
 
 module dmise.sound;
 
+import dmise.core;
 
+/**
+Utility function to play a sound effect.
+*/
+auto playSound(Mix_Chunk* chunk)
+{
+	return Mix_PlayChannel(-1, chunk, 0);
+}
 
 //auto init()
 //{
