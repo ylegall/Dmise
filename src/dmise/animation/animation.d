@@ -1,4 +1,3 @@
-
 module dmise.animation.animation;
 
 import dmise.core;
@@ -162,7 +161,7 @@ class AnimationBuilder(T)
 		return this;
 	}
 
-	auto get() {
+	auto build() {
 		return animation;
 	}
 }
