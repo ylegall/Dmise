@@ -1,4 +1,3 @@
-
 module dmise.menu;
 
 import dmise.core;
@@ -26,7 +25,7 @@ struct MenuItem {
 			.to(Colors.SELECTED)
 			.lasting(200)
 			.ease(Ease(CUBE))
-			.get();
+			.build();
 
 		// create the size animation:
 		sizeAnimation = AnimationBuilder!(int).create(&label.textLocation.x)
@@ -34,7 +33,7 @@ struct MenuItem {
 			.to(36)
 			.lasting(200)
 			.ease(Ease(CUBE, EaseMode.OUT))
-			.get();
+			.build();
 	}
 
 	void update(long delta) {
