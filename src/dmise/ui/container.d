@@ -33,7 +33,7 @@ enum SizeMode
 }
 
 /**
-
+Implements basic container logic.
 */
 mixin template ContainerMixin()
 {
@@ -69,7 +69,7 @@ mixin template ContainerMixin()
 
 
 /**
-
+Default container implementation.
 */
 class Container : IContainer
 {
@@ -95,6 +95,7 @@ class Container : IContainer
 		resize();
 	}
 
+	// TODO: add logic for alignment
 	void resize() {
 		if (layoutMode == LayoutMode.VERTICAL) {
 			resizeVertical();
@@ -105,23 +106,37 @@ class Container : IContainer
 
 	private void resizeVertical() {
 		int childHeight = cast(int)(rect.h - (padding * (children.length + 1))/children.length);
-		int x = 0;
-		int y = padding;
+		int x = padding;
+		int y = 0;
 		foreach (child; children) {
-			x += padding;
+			y += padding;
 			child.setLocation(x,y);
 			if (sizeMode == SizeMode.FILL_PARENT) {
 				child.setHeight(childHeight);
-				x += childHeight;
+				y += childHeight;
 			} else {
-				x += child.getHeight();
+				y += child.getHeight();
 			}
 			child.setWidth(rect.w);
 		}
 	}
 
 	private void resizeHorizontal() {
-		// TODO
+		// calculate the width for each component:
+		int childWidth = cast(int)(rect.w - (padding * (children.length + 1))/children.length);
+		int x = 0;
+		int y = padding;
+		foreach (child; children) {
+			x += padding;
+			child.setLocation(x,y);
+			if (sizeMode == SizeMode.FILL_PARENT) {
+				child.setWidth(childWidth);
+				x += childWidth;
+			} else {
+				x += child.getWidth();
+			}
+			child.setHeight(rect.h);
+		}
 	}
 
 	void onEvent(SDL_Event event) {
