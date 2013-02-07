@@ -15,7 +15,7 @@ interface IContainer : GameObject
 	void setHeight(int h);
 
 	void setLocation(int x, int y);
-	Point getLocation();
+	Coord getLocation();
 	void setSize(int w, int h);
 	Size getSize();
 }
@@ -50,11 +50,16 @@ mixin template ContainerMixin()
 	}
 
 	Point getLocation() {
-		return Point(rect.x, rect.y);
+		return Coord(rect.x, rect.y);
 	}
 
 	void setSize(int w, int h) {
 		rect.w = w; rect.h = h;
+	}
+
+	void setSize(Coord c) {
+		rect.w = c.w;
+		rect.h = c.h;
 	}
 
 	Size getSize() {
