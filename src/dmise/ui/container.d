@@ -7,7 +7,7 @@ import dmise.util.types;
 /**
 A simple container to control the layout of ui components.
 */
-interface IContainer : GameObject
+interface IContainer
 {
 	int getWidth();
 	int getHeight();
@@ -17,6 +17,10 @@ interface IContainer : GameObject
 	Coord getLocation();
 	void setSize(int w, int h);
 	Size getSize();
+	@property int x(int x);
+	@property int x();
+	@property int y(int y);
+	@property int y();
 }
 
 /**
@@ -68,11 +72,28 @@ mixin template ContainerMixin()
 		rect.h = h;
 	}
 
+	@property
+	int x(int x) {
+		return rect.x = x;
+	}
+	@property
+	int x() {
+		return rect.x;
+	}
+	@property
+	int y(int y) {
+		return rect.y = y;
+	}
+	@property
+	int y() {
+		return rect.y;
+	}
+
 	void setLocation(int x, int y) {
 		rect.x = x; rect.y = y;
 	}
 
-	Point getLocation() {
+	Coord getLocation() {
 		return Coord(rect.x, rect.y);
 	}
 
@@ -80,7 +101,7 @@ mixin template ContainerMixin()
 		rect.w = w; rect.h = h;
 	}
 
-	void setSize(Coord c) {
+	void setSize(Size c) {
 		rect.w = c.w;
 		rect.h = c.h;
 	}
@@ -101,14 +122,14 @@ class Container : IContainer
 	private {
 		SDL_Rect rect;
 		Alignment alignment;
-		Container parent;
-		Container[] children;
+		IContainer parent;
+		IContainer[] children;
 	}
 	LayoutMode layoutMode;
 	SizeMode sizeMode;
 	int padding = 4;
 
-	this(Container parent = null, LayoutMode layoutMode = LayoutMode.VERTICAL) {
+	this(IContainer parent = null, LayoutMode layoutMode = LayoutMode.VERTICAL) {
 		this.parent = parent;
 		this.layoutMode = layoutMode;
 	}
@@ -146,26 +167,26 @@ class Container : IContainer
 		}
 	}
 
-	private auto alignHorizontal(Container c) {
+	private auto alignHorizontal(IContainer c) {
 		auto base = rect.x + padding;
 		final switch (alignment) {
-			case LEFT:
+			case Alignment.LEFT:
 				return c.x = base;
-			case CENTER:
+			case Alignment.CENTER:
 				return c.x = rect.w/2 - c.getWidth()/2;
-			case RIGHT:
+			case Alignment.RIGHT:
 				return c.x = rect.x + rect.w - padding - c.getWidth();
 		}
 	}
 
-	private auto alignVertical(Container c) {
+	private auto alignVertical(IContainer c) {
 		auto base = rect.y + padding;
 		final switch (alignment) {
-			case LEFT:
+			case Alignment.LEFT:
 				return c.y = base;
-			case CENTER:
+			case Alignment.CENTER:
 				return c.y = rect.h/2 - c.getHeight()/2;
-			case RIGHT:
+			case Alignment.RIGHT:
 				return c.y = rect.y + rect.h - padding - c.getHeight();
 		}
 	}
