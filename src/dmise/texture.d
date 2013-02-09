@@ -4,6 +4,7 @@ import std.string : toStringz;
 
 class Texture {
 	SDL_Texture* texture;
+	alias texture this;
 	this(SDL_Texture* texture) {
 		this.texture = texture;
 	}
