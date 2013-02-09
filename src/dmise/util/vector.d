@@ -92,14 +92,18 @@ struct Vector2D(T=real)
 	}
 
 	/**
-	Calculate the dot product of this Vector2D with another.
+	Support assignment operators.
 	@return the dot-product as a real.
 	*/
-	auto opOpAssign(string op, N)(N num)
-		if (is(N:T))
+	auto opOpAssign(string op, V)(V other)
 	{
-		mixin("this.x " ~ op ~ "= num;");
-		mixin("this.y " ~ op ~ "= num;");
+		static if (is(V:T)) {
+			mixin("this.x " ~ op ~ "= other;");
+			mixin("this.y " ~ op ~ "= other;");
+		} else static if (is(V == Vector2D!T)) {
+			mixin("this.x " ~ op ~ "= other.x;");
+			mixin("this.y " ~ op ~ "= other.y;");
+		}
 	}
 
 	unittest {
@@ -107,6 +111,10 @@ struct Vector2D(T=real)
 		v1 -= 1.0;
 		assert(v1.x == 3);
 		assert(v1.y == 4);
+
+		v1 = Vector(13,17);
+		v1 += v1;
+		assert(v1 == Vector(26,34));
 	}
 
 	/**
@@ -114,17 +122,6 @@ struct Vector2D(T=real)
 	*/
 	auto perpendicular() const {
 		return new Vector2D(y, x);
-	}
-
-	/**
-	Get the signed angle between 2 vectors.
-	@param v1 the first vector
-	@param v2 the second vector
-	@return the signed angle in radians between the two vectors
-	*/
-	static auto signedAngle(Vector2D!T v1, Vector2D!T v2) {
-		auto perpDot = v1.x * v2.y - v1.y * v2.x;
-		return atan2(perpDot, v1.dot(v2));
 	}
 
 	/**
@@ -140,4 +137,15 @@ struct Vector2D(T=real)
 		assert(v1.direction == v1);
 	}
 
+}
+
+/**
+Get the signed angle between 2 vectors.
+@param v1 the first vector
+@param v2 the second vector
+@return the signed angle in radians between the two vectors
+*/
+static auto signedAngle(T)(Vector2D!T v1, Vector2D!T v2) {
+	auto perpDot = v1.x * v2.y - v1.y * v2.x;
+	return atan2(perpDot, v1.dot(v2));
 }
