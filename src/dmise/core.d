@@ -95,8 +95,9 @@ struct Graphics
 }
 
 /**
- *
- */
+Allows screens to be pushed and popped.
+TODO: rename?
+*/
 struct GameStack(int Size=4)
 {
 	private size_t index;
@@ -137,9 +138,9 @@ struct GameStack(int Size=4)
 }
 
 
-
 /**
 Centers a rectangle in the main window
+TODO: move to a better location.
 */
 auto centerHorizontal(ref SDL_Rect rect)
 {
@@ -147,7 +148,8 @@ auto centerHorizontal(ref SDL_Rect rect)
 }
 
 /**
-Sets the current renderer color
+Sets the current renderer color.
+TODO: move to a better location.
 */
 auto setColor(SDL_Renderer* r, SDL_Color c, ubyte a=255)
 {
@@ -156,6 +158,7 @@ auto setColor(SDL_Renderer* r, SDL_Color c, ubyte a=255)
 
 /**
 Gets the current renderer color.
+TODO: move to some better location.
 */
 auto getColor(SDL_Renderer* r)
 {
@@ -167,6 +170,7 @@ auto getColor(SDL_Renderer* r)
 
 /**
 Utility to make a texture for text.
+TODO: move to some better location.
 */
 auto makeText(string message, SDL_Color fgColor, SDL_Color bgColor = Colors.BACKGROUND )
 {
@@ -186,6 +190,7 @@ auto makeText(string message, SDL_Color fgColor, SDL_Color bgColor = Colors.BACK
 
 /**
 Utility to clamp a value between low and high values
+TODO: move to some better location.
 */
 auto clamp(T)(T val, T low=0, T high=1)
 	if(isNumeric!T)
@@ -197,6 +202,7 @@ auto clamp(T)(T val, T low=0, T high=1)
 
 /**
 Utility to make a texture from a surface
+TODO: move to some better location.
 */
 auto makeTexture(Graphics g, SDL_Surface* surface)
 {
@@ -243,7 +249,7 @@ struct Stack(T)
 }
 
 /**
-
+TODO: is this needed.
 */
 struct FramerateManager
 {
