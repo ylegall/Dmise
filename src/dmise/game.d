@@ -56,5 +56,9 @@ struct Game
 			stack.pop();
 		}
 	}
+
+        void pushGameState(GameState gameState) {
+		stack.push(gameState);
+        }
 }
 
