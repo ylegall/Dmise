@@ -6,6 +6,9 @@ import dmise.core;
 debug
 {
 	import std.stdio;
+	import std.array : appender;
+	import std.format : formattedWrite;
+	import std.conv : to;
 }
 
 pragma(lib, "DerelictSDL2");
@@ -17,9 +20,10 @@ private
 {
 	SDL_Renderer* renderer;
 	bool isRunning;
-	Game game;
 	Graphics graphics;
 }
+
+Game game;
 
 package {
 	GameInfo gameInfo;
@@ -70,7 +74,19 @@ private auto init()
 		//assert(false, "MIX_Init failed");
 	//}
 	// open 22.05KHz, signed 16bit, system byte order, stereo audio, using 1024 byte chunks
-	if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+
+	/* Let's do a little inspection of which audio drivers are available.
+	 * This may not turn out to be totally useless in the long run...
+	 */
+	debug {
+		int numAudioDrivers = SDL_GetNumAudioDrivers();
+			writefln("[debug] SDL_GetNumAudioDrivers() = %d", numAudioDrivers);
+		foreach (int n; 0..numAudioDrivers) {
+			writefln("[debug]     driver # %d: \"%s\"", n, to!string(SDL_GetAudioDriver(n)));
+		}
+	}
+
+	if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 256) == -1) {
 	    printf("Mix_OpenAudio failed: %s\n", Mix_GetError());
 	    exit(2);
 	}
@@ -109,11 +125,9 @@ private auto run()
     while (game.isAlive()) {
         if (SDL_PollEvent(&event)) {
         	//debug writeln("received event type: ", event.type);
-            if (event.type == SDL_QUIT) {
-            	game.shutdown();
-            	break;
-            }
-	        game.onEvent(event);
+            if (event.type == SDL_QUIT)
+		return;
+	    game.onEvent(event);
         }
 
         timer.stop();
@@ -139,16 +153,39 @@ auto getGraphics() {
 // cleanup resources:
 private auto shutdown()
 {
-	writeln("shutting down...");
+	debug {
+		auto shutdownLogWriter = appender!string();
+		string shutdownSystem = "";
+		StopWatch timer;
+		void shutdownLog(string name) {
+			if (shutdownSystem.length) {
+				auto elapsed = timer.peek().msecs;
+				formattedWrite(shutdownLogWriter, "[shutdown] %s %dms\n", shutdownSystem, elapsed);
+				timer.reset();
+			} else {
+				timer.start();
+			}
+			shutdownSystem = name;
+		}
+	}
+
+	debug shutdownLog("TTF_Quit");
 	TTF_Quit();
-
+	debug shutdownLog("Mix_CloseAudio");
 	Mix_CloseAudio();
-	//Mix_Quit();
-
+	debug shutdownLog("Mix_Quit");
+	Mix_Quit();
+	debug shutdownLog("IMG_Quit");
 	IMG_Quit();
+	debug shutdownLog("SDL_DestroyRenderer");
 	SDL_DestroyRenderer(graphics.renderer);
+	debug shutdownLog("SDL_DestroyWIndow");
 	SDL_DestroyWindow(graphics.window);
+	debug shutdownLog("SDL_Quit");
 	SDL_Quit();
+	debug shutdownLog("done");
+	debug writeln(shutdownLogWriter.data);
+	writeln("shutted down...");
 }
 
 int main(string[] args)
