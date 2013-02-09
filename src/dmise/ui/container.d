@@ -13,19 +13,24 @@ interface IContainer : GameObject
 	int getHeight();
 	void setWidth(int w);
 	void setHeight(int h);
-
 	void setLocation(int x, int y);
 	Coord getLocation();
 	void setSize(int w, int h);
 	Size getSize();
 }
 
+/**
+Determine how child components are sized.
+*/
 enum LayoutMode
 {
 	VERTICAL,
 	HORIZONTAL
 }
 
+/**
+Determine how child components are sized.
+*/
 enum SizeMode
 {
 	FILL_PARENT,
@@ -33,17 +38,35 @@ enum SizeMode
 }
 
 /**
+Determine how child components positioned.
+*/
+enum Alignment
+{
+	LEFT,
+	CENTER,
+	RIGHT
+}
+
+/**
 Implements basic container logic.
 */
 mixin template ContainerMixin()
 {
-	int getWidth() { return rect.w; }
+	int getWidth() {
+		return rect.w;
+	}
 
-	int getHeight() { return rect.h; }
+	int getHeight() {
+		return rect.h;
+	}
 
-	void setWidth(int w) { rect.w = w; }
+	void setWidth(int w) {
+		rect.w = w;
+	}
 
-	void setHeight(int h) { rect.h = h; }
+	void setHeight(int h) {
+		rect.h = h;
+	}
 
 	void setLocation(int x, int y) {
 		rect.x = x; rect.y = y;
@@ -77,11 +100,12 @@ class Container : IContainer
 
 	private {
 		SDL_Rect rect;
-		LayoutMode layoutMode;
-		SizeMode sizeMode;
+		Alignment alignment;
 		Container parent;
 		Container[] children;
 	}
+	LayoutMode layoutMode;
+	SizeMode sizeMode;
 	int padding = 4;
 
 	this(Container parent = null, LayoutMode layoutMode = LayoutMode.VERTICAL) {
@@ -89,73 +113,61 @@ class Container : IContainer
 		this.layoutMode = layoutMode;
 	}
 
-	void add(Container child) {
-		children ~= [child];
-		// TODO:
+	void add(Container[] child ...) {
+		children ~= child;
 		resize();
 	}
 
-	// TODO: add logic for alignment
 	void resize() {
-		if (layoutMode == LayoutMode.VERTICAL) {
-			resizeVertical();
-		} else {
-			resizeHorizontal();
-		}
-	}
-
-	private void resizeVertical() {
-		int childHeight = cast(int)(rect.h - (padding * (children.length + 1))/children.length);
-		int x = padding;
+		int x = 0;
 		int y = 0;
+		int childHeight = cast(int)(rect.h - (padding * (children.length + 1)) / children.length);
+		int childWidth = cast(int)(rect.w - (padding * (children.length + 1)) / children.length);
+
 		foreach (child; children) {
-			y += padding;
-			child.setLocation(x,y);
-			if (sizeMode == SizeMode.FILL_PARENT) {
+			if (layoutMode == LayoutMode.VERTICAL) {
+				y += padding;
+				if (sizeMode == SizeMode.FILL_PARENT) {
+					child.setWidth(rect.w);
+				}
+				x = alignHorizontal(child);
 				child.setHeight(childHeight);
 				y += childHeight;
 			} else {
-				y += child.getHeight();
-			}
-			child.setWidth(rect.w);
-		}
-	}
-
-	private void resizeHorizontal() {
-		// calculate the width for each component:
-		int childWidth = cast(int)(rect.w - (padding * (children.length + 1))/children.length);
-		int x = 0;
-		int y = padding;
-		foreach (child; children) {
-			x += padding;
-			child.setLocation(x,y);
-			if (sizeMode == SizeMode.FILL_PARENT) {
+				x += padding;
+				if (sizeMode == SizeMode.FILL_PARENT) {
+					child.setHeight(rect.h);
+				}
+				y = alignVertical(child);
 				child.setWidth(childWidth);
 				x += childWidth;
-			} else {
-				x += child.getWidth();
 			}
-			child.setHeight(rect.h);
+			child.setLocation(x,y);
 		}
 	}
 
-	void onEvent(SDL_Event event) {
-		// TODO
-	}
-
-	void draw(Graphics g) {
-		foreach(child; children) {
-			child.draw(g);
+	private auto alignHorizontal(Container c) {
+		auto base = rect.x + padding;
+		final switch (alignment) {
+			case LEFT:
+				return c.x = base;
+			case CENTER:
+				return c.x = rect.w/2 - c.getWidth()/2;
+			case RIGHT:
+				return c.x = rect.x + rect.w - padding - c.getWidth();
 		}
 	}
 
-	void update(long delta) {
-		foreach(child; children) {
-			child.update(delta);
+	private auto alignVertical(Container c) {
+		auto base = rect.y + padding;
+		final switch (alignment) {
+			case LEFT:
+				return c.y = base;
+			case CENTER:
+				return c.y = rect.h/2 - c.getHeight()/2;
+			case RIGHT:
+				return c.y = rect.y + rect.h - padding - c.getHeight();
 		}
 	}
-
-	bool isAlive() { return true; }
 }
-
 
