@@ -8,7 +8,7 @@ BINDIR=bin
 
 LDFLAGS=-L-L$(LIBDIR)
 #DFLAGS=-release
-DFLAGS=-debug -version=textQualityHigh
+DFLAGS=-debug -version=textQualityHigh -unittest
 
 #FILES=$(shell echo $(SRCDIR)/*.d)
 FILES=$(shell find $(SRCDIR) -name *.d)

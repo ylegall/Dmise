@@ -3,10 +3,13 @@ module dmise.util.vector;
 import std.math;
 import std.traits;
 
+alias Vector2D!real Vector;
+
 /**
 Implementation of a 2D vector.
 */
 struct Vector2D(T=real)
+	if(isNumeric!T)
 {
 	T x, y;
 
@@ -26,18 +29,26 @@ struct Vector2D(T=real)
 	/**
 	Support binary operators.
 	*/
-	const auto opBinary(string op)(Vector2D!T other) {
+	auto opBinary(string op)(Vector2D!T other) const {
 		Vector2D!T result;
 		result.x = mixin("this.x " ~ op ~ "other.x");
 		result.y = mixin("this.y " ~ op ~ "other.y");
 		return result;
 	}
 
+	unittest {
+		auto v1 = Vector(1,3);
+		auto v2 = Vector(5,8);
+		auto v3 = v1 + v2;
+		assert(v3.x == 6);
+		assert(v3.y == 11);
+	}
+
 	/**
 	Support binary operators.
 	*/
-	const auto opBinary(string op, C)(C c)
-		if(isNumeric!C)
+	auto opBinary(string op, C)(C c) const
+		if(is(C:T))
 	{
 		Vector2D!T result;
 		result.x = mixin("this.x " ~ op ~ "c");
@@ -45,37 +56,63 @@ struct Vector2D(T=real)
 		return result;
 	}
 
+	unittest {
+		auto v1 = Vector(1,3);
+		v1 = v1 * 2;
+		assert(v1.x == 2);
+		assert(v1.y == 6);
+	}
+
 	/**
 	Calculate the magnitude of this vector.
 	@return the magnitude as a real.
 	*/
-	const auto magnitude() {
+	@property
+	auto magnitude() const {
 		return sqrt(this.dot(this));
 	}
 
-	/**
-	Calculate the dot product of this Vector2D with another.
-	@return the dot-product as a real.
-	*/
-	const auto dot(const Vector2D!T other) {
-		return (x * other.x + y * other.y);
+	unittest {
+		auto v1 = Vector(3,4);
+		assert(v1.magnitude() == 5.0);
 	}
 
 	/**
 	Calculate the dot product of this Vector2D with another.
 	@return the dot-product as a real.
 	*/
-	void opOpAssign(string op, N)(N num)
-		if (isNumeric!N)
+	auto dot(const Vector2D!T other) const {
+		return (x * other.x + y * other.y);
+	}
+
+	unittest {
+		auto v1 = Vector(4,5);
+		auto v2 = Vector(2,3);
+		assert(v1.dot(v2) == 23);
+	}
+
+	/**
+	Calculate the dot product of this Vector2D with another.
+	@return the dot-product as a real.
+	*/
+	auto opOpAssign(string op, N)(N num)
+		if (is(N:T))
 	{
-		mixin("this.x " ~ op ~ "= num");
-		mixin("this.y " ~ op ~ "= num");
+		mixin("this.x " ~ op ~ "= num;");
+		mixin("this.y " ~ op ~ "= num;");
+	}
+
+	unittest {
+		auto v1 = Vector(4,5);
+		v1 -= 1.0;
+		assert(v1.x == 3);
+		assert(v1.y == 4);
 	}
 
 	/**
 	Get the Vector that is perpindicular to this Vector.
 	*/
-	const auto perpendicular() {
+	auto perpendicular() const {
 		return new Vector2D(y, x);
 	}
 
@@ -97,4 +134,10 @@ struct Vector2D(T=real)
 		auto mag = magnitude();
 		return (mag) ? (this * (1.0/mag)) : Vector2D!T();
 	}
+
+	unittest {
+		auto v1 = Vector(1,0);
+		assert(v1.direction == v1);
+	}
+
 }
