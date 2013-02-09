@@ -21,6 +21,7 @@ public
 	import std.datetime;
 	import std.exception;
 	import std.conv;
+	import std.math;
 	import std.traits;
 	import std.typecons;
 	debug
