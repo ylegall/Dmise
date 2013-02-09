@@ -95,6 +95,6 @@ struct Vector2D(T=real)
 	*/
 	const auto direction() {
 		auto mag = magnitude();
-		return (mag) ? (this * (1.0/mag)) : new Vector2D!T();
+		return (mag) ? (this * (1.0/mag)) : Vector2D!T();
 	}
 }

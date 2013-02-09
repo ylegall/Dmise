@@ -2,6 +2,7 @@ module dmise.menu;
 
 import dmise.core;
 import dmise.ui.label;
+import dmise.shooter;
 
 import std.algorithm;
 
@@ -83,7 +84,7 @@ class Menu : GameState
 		enforce(logo, "could not load logo.png");
 
 		menuItems = [
-			MenuItem("new game", delegate void() {}),
+			MenuItem("new game", delegate void() { game.pushGameState(new Shooter()); }),
 			MenuItem("load game", delegate void() {}),
 			MenuItem("settings", delegate void() {}),
 			MenuItem("about", delegate void() {}),

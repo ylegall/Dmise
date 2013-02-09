@@ -1,5 +1,9 @@
 .*.sw*
 tags
 *.o
-dmise
+./dmise
 lib
+derelict
+log
+*.patch
+res
