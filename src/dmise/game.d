@@ -17,6 +17,12 @@ class Game : GameState {
 		entities.insert(playerShip);
 	}
 
+	~this() {
+		for (entity; entities) {
+			delete entity;
+		}
+	}
+
 	/* TODO refactor this to occur elsewhere */
 	bool loadedGraphics = false;
 	Texture sprite;

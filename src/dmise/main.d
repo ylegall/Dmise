@@ -146,6 +146,8 @@ auto getGraphics() {
 // cleanup resources:
 private auto shutdown()
 {
+	gameStates.shutdown();
+
 	debug {
 		auto shutdownLogWriter = appender!string();
 		string shutdownSystem = "";
