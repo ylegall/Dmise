@@ -23,7 +23,7 @@ private
 	Graphics graphics;
 }
 
-Game game;
+GameStates gameStates;
 
 package {
 	GameInfo gameInfo;
@@ -34,7 +34,6 @@ auto getWindowSize() {
 }
 
 // initialize SDL systems:
-// TODO: load settings
 private auto init()
 {
 	// load game data:
@@ -67,12 +66,6 @@ private auto init()
 	}
 
 	// initialize SDL_Mixer
-	//flags = MIX_INIT_MP3;
-	//status = Mix_Init(flags);
-	//if((status & flags) != flags) {
-		//write("MIX_Init failed: "); printf(IMG_GetError()); writeln();
-		//assert(false, "MIX_Init failed");
-	//}
 	// open 22.05KHz, signed 16bit, system byte order, stereo audio, using 1024 byte chunks
 
 	/* Let's do a little inspection of which audio drivers are available.
@@ -80,7 +73,7 @@ private auto init()
 	 */
 	debug {
 		int numAudioDrivers = SDL_GetNumAudioDrivers();
-			writefln("[debug] SDL_GetNumAudioDrivers() = %d", numAudioDrivers);
+		writefln("[debug] SDL_GetNumAudioDrivers() = %d", numAudioDrivers);
 		foreach (int n; 0..numAudioDrivers) {
 			writefln("[debug]     driver # %d: \"%s\"", n, to!string(SDL_GetAudioDriver(n)));
 		}
@@ -101,7 +94,7 @@ private auto init()
 	    assert(false);
 	}
 
-    game.init();
+    gameStates.init();
 }
 
 private auto delay(long elapsed)
@@ -122,20 +115,20 @@ private auto run()
 	StopWatch timer;
 
 	timer.start();
-	while (game.isAlive()) {
+	while (gameStates.isAlive()) {
 		if (SDL_PollEvent(&event)) {
 			//debug writeln("received event type: ", event.type);
 			if (event.type == SDL_QUIT)
 				return;
-			game.onEvent(event);
+			gameStates.onEvent(event);
 		}
 
 		timer.stop();
 		auto elapsed = timer.peek().msecs;
-		game.update(elapsed);
+		gameStates.update(elapsed);
 		timer.reset();
 		timer.start();
-		game.draw(graphics);
+		gameStates.draw(graphics);
 		delay(elapsed);
 		SDL_RenderPresent(graphics.renderer);
 		setColor(graphics.renderer, Colors.BACKGROUND);

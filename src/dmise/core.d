@@ -9,7 +9,7 @@ public
 	import derelict.sdl2.mixer;
 
 	import dmise.main;
-	import dmise.game;
+	import dmise.gamestate;
 	import dmise.menu;
 	import dmise.animation.ease;
 	import dmise.animation.animation;

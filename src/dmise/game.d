@@ -1,64 +1,49 @@
 
 module dmise.game;
 
+import dmise.entity;
 import dmise.core;
+import dmise.texture;
+import std.container;
 
+class Game : GameState {
 
-/**
+	PlayerShip playerShip;
+	SList!(Entity) entities;
 
-*/
-struct Game
-{
-	private {
-		bool alive;
-		GameStack!4 stack;
+	this() {
+		debug writeln("[game] this()");
+		playerShip = new PlayerShip();
+		entities.insert(playerShip);
 	}
 
-	auto checkAlive() {
-		if (stack.top && !stack.top.isAlive()) {
-			stack.pop();
-			alive = !stack.isEmpty();
+	/* TODO refactor this to occur elsewhere */
+	bool loadedGraphics = false;
+	Texture sprite;
+
+	void draw(Graphics graphicsContext) {
+		if (!loadedGraphics) {
+			debug writeln("[game] draw() loading graphics..");
+			sprite = getTexture(graphicsContext, "ship-0.gif");
+			loadedGraphics = true;
+		}
+
+		foreach (entity; entities) {
+			entity.draw(graphicsContext);
 		}
 	}
 
-	void init() {
-		stack.push(new Menu());
-		assert(stack.top, "stack top should not be null");
-		alive = true;
-	}
-
-	bool isAlive() {
-		return alive;
+	void update(long delta) {
+		foreach (entity; entities) {
+			entity.update(delta);
+		}
 	}
 
 	void onEvent(SDL_Event event) {
-		if (!stack.isEmpty()) {
-			stack.top.onEvent(event);
-		}
+		playerShip.onEvent(event);
 	}
 
-	void update(long delta){
-		checkAlive();
-		if (!stack.isEmpty) {
-			stack.top.update(delta);
-		}
-	}
-
-	void draw(Graphics g) {
-		if (!stack.isEmpty()) {
-			stack.top.draw(g);
-		}
-	}
-
-	void shutdown() {
-		alive = false;
-		while (!stack.isEmpty()) {
-			stack.pop();
-		}
-	}
-
-	void pushGameState(GameState gameState) {
-		stack.push(gameState);
+	bool isAlive() {
+		return true;
 	}
 }
-
