@@ -202,6 +202,16 @@ auto clamp(T)(T val, T low=0, T high=1)
 }
 
 /**
+Utility to clamp a value between low and high values
+TODO: move to some better location.
+*/
+enum DEGREES_PER_RADIAN = 180 / PI;
+auto radiansToDegrees(real radians) {
+	//return 57.2957795 * radians;
+	return DEGREES_PER_RADIAN * radians;
+}
+
+/**
 Utility to make a texture from a surface
 TODO: move to some better location.
 */
@@ -250,7 +260,7 @@ struct Stack(T)
 }
 
 /**
-TODO: is this needed.
+TODO: is this needed?
 */
 struct FramerateManager
 {

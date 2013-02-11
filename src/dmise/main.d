@@ -117,29 +117,29 @@ private auto run()
 {
 	debug writeln("entering main loop");
 
-    isRunning = true;
-    SDL_Event event;
-    StopWatch timer;
+	isRunning = true;
+	SDL_Event event;
+	StopWatch timer;
 
-    timer.start();
-    while (game.isAlive()) {
-        if (SDL_PollEvent(&event)) {
-        	//debug writeln("received event type: ", event.type);
-            if (event.type == SDL_QUIT)
-		return;
-	    game.onEvent(event);
-        }
+	timer.start();
+	while (game.isAlive()) {
+		if (SDL_PollEvent(&event)) {
+			//debug writeln("received event type: ", event.type);
+			if (event.type == SDL_QUIT)
+				return;
+			game.onEvent(event);
+		}
 
-        timer.stop();
-        auto elapsed = timer.peek().msecs;
-        game.update(elapsed);
-        timer.reset();
-        timer.start();
-        game.draw(graphics);
-        delay(elapsed);
-        SDL_RenderPresent(graphics.renderer);
-        setColor(graphics.renderer, Colors.BACKGROUND);
-        SDL_RenderClear(graphics.renderer);
+		timer.stop();
+		auto elapsed = timer.peek().msecs;
+		game.update(elapsed);
+		timer.reset();
+		timer.start();
+		game.draw(graphics);
+		delay(elapsed);
+		SDL_RenderPresent(graphics.renderer);
+		setColor(graphics.renderer, Colors.BACKGROUND);
+		SDL_RenderClear(graphics.renderer);
     }
 }
 
