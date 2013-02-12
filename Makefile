@@ -12,7 +12,7 @@ LDFLAGS=-L-L$(LIBDIR) -L-lGL -L-lSDL2 $(patsubst lib/lib%.a,-L-l%,$(LIBS))
 DFLAGS=-debug -g -gc -version=textQualityHigh -unittest
 
 #FILES=$(shell echo $(SRCDIR)/*.d)
-FILES=$(shell find $(SRCDIR) -name *.d)
+FILES=$(shell find $(SRCDIR) -name \*.d)
 OBJS=$(patsubst %.d,%.o,$(FILES))
 
 ARGS=
