@@ -43,8 +43,8 @@ class MovingEntity : Entity {
 */
 enum Rotation
 {
-	CW,
-	CCW,
+	CLOCKWISE,
+	COUNTER_CLOCKWISE,
 	NONE
 }
 
@@ -65,10 +65,10 @@ class PlayerShip : MovingEntity
 		auto shields = 100;
 		auto hullIntegrity = 100;
 		auto MAX_VELOCITY = 36;       // TODO: load from configuration
+		enum rotationSpeed = 0.02;    // TODO: load from configuration
 
-		enum rotationSpeed = 0.02;
 		enum sinCoef = sin(rotationSpeed);
-        enum cosCoef = cos(rotationSpeed);
+		enum cosCoef = cos(rotationSpeed);
 	}
 
 	this(Vec pos, Vec vel) {
@@ -88,29 +88,29 @@ class PlayerShip : MovingEntity
 
 	override void update(long delta) {
 		// update the direction by applying rotation matrix:
-        final switch (rotation) {
-	        case Rotation.CW:
-                dir.x = (dir.x * cosCoef) - (dir.y * sinCoef);
-                dir.y = (dir.x * sinCoef) + (dir.y * cosCoef);
-                break;
-            case Rotation.CCW:
-                dir.x = (dir.x * cosCoef) + (dir.y * sinCoef);
-                dir.y = -(dir.x * sinCoef) + (dir.y * cosCoef);
-                break;
-            case Rotation.NONE:
-            	break;
-        }
+		final switch (rotation) {
+			case Rotation.CLOCKWISE:
+				dir.x = (dir.x * cosCoef) - (dir.y * sinCoef);
+				dir.y = (dir.x * sinCoef) + (dir.y * cosCoef);
+				break;
+			case Rotation.COUNTER_CLOCKWISE:
+				dir.x = (dir.x * cosCoef) + (dir.y * sinCoef);
+				dir.y = -(dir.x * sinCoef) + (dir.y * cosCoef);
+				break;
+			case Rotation.NONE:
+				break;
+		}
 
-        // normalize the direction vector
+		// normalize the direction vector
 		dir = dir.direction();
 
 		if (isBoosting) {
-            vel += (dir * (delta / 1000.0));
+			vel += (dir * (delta / 1000.0));
 
-            // limit the maximum velocity:
-            if (vel.magnitude() > MAX_VELOCITY) {
+			// limit the maximum velocity:
+			if (vel.magnitude() > MAX_VELOCITY) {
 				vel = vel.direction() * MAX_VELOCITY;
-            }
+			}
 		}
 
 		super.update(delta);
