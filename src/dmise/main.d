@@ -1,6 +1,8 @@
 module dmise.main;
 
+import std.stdio : writefln, writeln;
 import dmise.core;
+import dmise.ui.oglconsole;
 
 
 debug
@@ -62,7 +64,7 @@ private auto init()
     auto flags = IMG_INIT_PNG;
 	status = IMG_Init(flags);
 	if ((status & flags) != flags) {
-		write("IMG_Init failed: "); printf(IMG_GetError()); writeln();
+		writefln("IMG_Init failed: %s", IMG_GetError());
 		assert(false, "IMG_Init failed");
 	}
 
@@ -87,7 +89,7 @@ private auto init()
 	}
 
 	if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 256) == -1) {
-	    printf("Mix_OpenAudio failed: %s\n", Mix_GetError());
+	    writefln("Mix_OpenAudio failed: %s", Mix_GetError());
 	    exit(2);
 	}
 
@@ -100,6 +102,8 @@ private auto init()
 	    writefln("TTF_OpenFont failed: %s", TTF_GetError());
 	    assert(false);
 	}
+
+    OGLCONSOLE_Create();
 
     game.init();
 }
@@ -127,6 +131,9 @@ private auto run()
         	//debug writeln("received event type: ", event.type);
             if (event.type == SDL_QUIT)
 		return;
+
+	    if (!OGLCONSOLE_SDLEvent(&event))
+		
 	    game.onEvent(event);
         }
 
@@ -136,6 +143,7 @@ private auto run()
         timer.reset();
         timer.start();
         game.draw(graphics);
+	OGLCONSOLE_Draw();
         delay(elapsed);
         SDL_RenderPresent(graphics.renderer);
         setColor(graphics.renderer, Colors.BACKGROUND);
