@@ -105,9 +105,9 @@ class PlayerShip : MovingEntity
 		dir = dir.direction();
 
 		if (isBoosting) {
-            vel += (dir * (delta / 1000.0));
+			vel += (dir * (delta / 1000.0));
 
-            // limit the maximum velocity:
+			// limit the maximum velocity:
 			if (vel.magnitude() > MAX_VELOCITY) {
 				vel = vel.direction() * MAX_VELOCITY;
 			}
