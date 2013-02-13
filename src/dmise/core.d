@@ -95,49 +95,6 @@ struct Graphics
 	TTF_Font* font;
 }
 
-/**
-Allows screens to be pushed and popped.
-TODO: rename?
-*/
-struct GameStack(int Size=4)
-{
-	private size_t index;
-	private GameState[Size] states;
-
-	void push(GameState state) {
-		assert(index < Size - 1, "game stack is full.");
-		auto top = states[index];
-		if (top) {
-			top.onHide();
-		}
-		states[index] = state;
-		index += 1;
-		state.onShow();
-	}
-
-	void pop() {
-		assert(index > 0, "game stack is empty");
-		index -= 1;
-		auto top = states[index];
-		top.onHide();
-		delete states[index];
-		states[index] = null;
-	}
-
-	@property
-	GameState top() {
-		if (index > 0) {
-			return states[index - 1];
-		} else {
-			return null;
-		}
-	}
-
-	bool isEmpty() {
-		return index == 0;
-	}
-}
-
 
 /**
 Centers a rectangle in the main window
@@ -218,45 +175,6 @@ TODO: move to some better location.
 auto makeTexture(Graphics g, SDL_Surface* surface)
 {
 	return SDL_CreateTextureFromSurface(g.renderer, surface);
-}
-
-struct Stack(T)
-{
-	struct Node {
-		T data;
-		Node* prev;
-	}
-
-	private size_t size;
-	Node* top;
-
-	this() {
-		size = 0;
-		top = null;
-	}
-
-	T pop() {
-		assert(size > 0, "stack is empty");
-		auto node = top;
-		top = top.prev;
-		--size;
-		auto retval = node.data;
-		delete node;
-		return retval;
-	}
-
-	void push(T item) {
-		Node node = { item, top };
-		++size;
-		top = node;
-	}
-
-	T peek() { assert(size > 0, "stack is empty"); return top.data; }
-
-	@property
-	auto length() { return size; }
-
-	bool isEmpty() { return size == 0; }
 }
 
 /**

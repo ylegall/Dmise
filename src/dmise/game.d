@@ -4,9 +4,16 @@ module dmise.game;
 import dmise.entity;
 import dmise.core;
 import dmise.texture;
+import dmise.util.stack;
+
 import std.container;
 
 class Game : GameState {
+
+	private
+	{
+		bool isRunning = true;
+	}
 
 	PlayerShip playerShip;
 	SList!(Entity) entities;
@@ -50,7 +57,7 @@ class Game : GameState {
 	}
 
 	bool isAlive() {
-		return true;
+		return isRunning;
 	}
 }
 

@@ -2,6 +2,7 @@
 module dmise.gamestates;
 
 import dmise.core;
+import dmise.util.stack;
 
 
 /**
@@ -11,19 +12,18 @@ struct GameStates
 {
 	private {
 		bool alive;
-		GameStack!4 stack;
+		Stack!GameState stack;
 	}
 
 	auto checkAlive() {
-		if (stack.top && !stack.top.isAlive()) {
+		if (stack.peek() && !stack.peek().isAlive()) {
 			stack.pop();
 			alive = !stack.isEmpty();
 		}
 	}
 
 	void init() {
-		stack.push(new Menu());
-		assert(stack.top, "stack top should not be null");
+		pushGameState(new Menu());
 		alive = true;
 	}
 
@@ -33,32 +33,40 @@ struct GameStates
 
 	void onEvent(SDL_Event event) {
 		if (!stack.isEmpty()) {
-			stack.top.onEvent(event);
+			stack.peek().onEvent(event);
 		}
 	}
 
 	void update(long delta){
 		checkAlive();
 		if (!stack.isEmpty) {
-			stack.top.update(delta);
+			stack.peek().update(delta);
 		}
 	}
 
 	void draw(Graphics g) {
 		if (!stack.isEmpty()) {
-			stack.top.draw(g);
+			stack.peek().draw(g);
 		}
 	}
 
 	void shutdown() {
 		alive = false;
 		while (!stack.isEmpty()) {
-			stack.pop();
+			auto state = stack.pop();
 		}
+		assert(stack.isEmpty());
 	}
 
 	void pushGameState(GameState gameState) {
 		stack.push(gameState);
+		gameState.onShow();
+	}
+
+	void popGameState() {
+		auto state = stack.pop();
+		state.onHide();
+		delete state;
 	}
 }
 

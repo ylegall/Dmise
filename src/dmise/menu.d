@@ -96,6 +96,7 @@ class Menu : GameState
 			MenuItem("quit", delegate void() { isRunning = false; })
 		];
 
+		// TODO: remove hard coded numbers
 		container = new Container(null, LayoutMode.VERTICAL, SizeMode.FILL_PARENT);
 		container.setRect(16, 200, gameInfo.width - 32, 200);
 		foreach (item; menuItems) {
@@ -145,7 +146,7 @@ class Menu : GameState
 					case SDLK_ESCAPE:
 						debug writeln("Mainmenu: Keydown ESC");
 						isRunning = false;
-						return;
+						break;
 
 					default:
 						break;

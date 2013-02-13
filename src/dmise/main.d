@@ -19,7 +19,6 @@ pragma(lib, "dl");
 private
 {
 	SDL_Renderer* renderer;
-	bool isRunning;
 	Graphics graphics;
 }
 
@@ -111,7 +110,6 @@ private auto run()
 {
 	debug writeln("entering main loop");
 
-	isRunning = true;
 	SDL_Event event;
 	StopWatch timer;
 
@@ -119,8 +117,9 @@ private auto run()
 	while (gameStates.isAlive()) {
 		if (SDL_PollEvent(&event)) {
 			//debug writeln("received event type: ", event.type);
-			if (event.type == SDL_QUIT)
+			if (event.type == SDL_QUIT) {
 				return;
+			}
 			gameStates.onEvent(event);
 		}
 
