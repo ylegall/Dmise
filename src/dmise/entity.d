@@ -61,7 +61,7 @@ class PlayerShip : MovingEntity
 		SDL_Rect rect;
 		bool isBoosting;
 		Texture shipTexture;
-                int frameCharge = 0;
+                int propulsionVisualPower = 0;
 
 		auto shields = 100;
 		auto hullIntegrity = 100;
@@ -123,15 +123,14 @@ class PlayerShip : MovingEntity
 
 		//SDL_RenderCopy(g.renderer, shipTexture, null, &rect);
 
-                if (vel.x || vel.y)
-                    frameCharge = min(frameCharge+1, 60);
-                else
-                    frameCharge = max(frameCharge-1, 0);
-
 		auto angle = radiansToDegrees(atan2(dir.x, -dir.y));
 
+        if (isBoosting)
+            propulsionVisualPower = min(propulsionVisualPower+1, 60);
+        else
+            propulsionVisualPower = max(propulsionVisualPower-1, 0);
 		SDL_RenderCopyEx(g.renderer, getTexture(g, "ship-0.gif",
-                    frameCharge/10).texture, null, &rect, angle, null, SDL_FLIP_NONE);
+                    propulsionVisualPower/10).texture, null, &rect, angle, null, SDL_FLIP_NONE);
 	};
 
 	void onKeyPress(SDL_KeyboardEvent keyEvent) {
