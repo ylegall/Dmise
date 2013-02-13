@@ -62,6 +62,14 @@ Download and install Derelict3 SDL2 bindings for D:
     cd Derelict3/build
     rdmd build.d # rdmd might fail, try dmd
 
+OGLCONSOLE
+----------
+
+    git clone git://github.com/hdon/oglconsole.git -b sdl2-dev oglconsole
+    cd oglconsole
+    # create configuration.mak, see README for example
+    make
+
 Dmise
 -----
 Download and build Dmise:
