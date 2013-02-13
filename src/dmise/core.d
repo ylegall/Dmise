@@ -63,7 +63,7 @@ Holds game information and metadata.
  */
 struct GameInfo
 {
-	string name = "Prototype";
+	string name = "Dmise";
 	int height = 800;
 	int width = 800;
 	int padding = 20;
