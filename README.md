@@ -45,6 +45,8 @@ SDL_image
 
     hg clone http://hg.libsdl.org/SDL_image/ -r 18ab81286e51
     cd SDL_image
+    wget http://codebad.com/~hdon/SDL_image-18ab81286e51-GIF_frames.patch
+    hg import --no-commit SDL_image-18ab81286e51-GIF_frames.patch
     ./configure
     make
     make install
