@@ -39,13 +39,13 @@ class MovingEntity : Entity {
 }
 
 /**
-
+Rotation types.
 */
 enum Rotation
 {
+	NONE,
 	CLOCKWISE,
-	COUNTER_CLOCKWISE,
-	NONE
+	COUNTER_CLOCKWISE
 }
 
 /**
@@ -75,7 +75,7 @@ class PlayerShip : MovingEntity
 		super(pos, vel);
 		rect = SDL_Rect(0, 0, 48, 48);
 		shipTexture = getTexture(getGraphics(), "ship-0.gif");
-		dir = Vector(1,0);
+		dir = Vector(0,-1);
 	}
 
 	this() {
@@ -132,13 +132,14 @@ class PlayerShip : MovingEntity
 				isBoosting = true;
 				break;
 			case 's':
+				// TODO: lower speed if player ship has that upgrade
 				break;
 
 			case 'a':
-				rotation = Rotation.CCW;
+				rotation = Rotation.COUNTER_CLOCKWISE;
 				break;
 			case 'd':
-				rotation = Rotation.CW;
+				rotation = Rotation.CLOCKWISE;
 				break;
 			default:
 				break;

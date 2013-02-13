@@ -2,6 +2,7 @@ module dmise.menu;
 
 import dmise.core;
 import dmise.ui.label;
+import dmise.ui.container;
 import dmise.game;
 
 import std.algorithm;
@@ -18,8 +19,12 @@ struct MenuItem {
 
 	this(string str, Action action) {
 		label = new Label(str);
+		label.padding = 8;
 		this.action = action;
+		addAnimations();
+	}
 
+	void addAnimations() {
 		// create the color animation:
 		colorAnimation = AnimationBuilder!(SDL_Color).create(&label.bgColor)
 			.from(Colors.DARK_GRAY)
@@ -30,8 +35,8 @@ struct MenuItem {
 
 		// create the size animation:
 		sizeAnimation = AnimationBuilder!(int).create(&label.textLocation.x)
-			.from(20)
-			.to(36)
+			.from(label.textLocation.x)
+			.to(label.textLocation.x + 16)
 			.lasting(200)
 			.ease(Ease(CUBE, EaseMode.OUT))
 			.build();
@@ -63,7 +68,7 @@ class Menu : GameState
 
 		SDL_Texture* logo;
 		SDL_Rect logoRect;
-		SDL_Rect menuRect;		// TODO remove
+		Container container;
 
 		SDL_Color fgColor = {0, 0, 0};
 		SDL_Color bgColor = {0, 255, 0};
@@ -77,11 +82,11 @@ class Menu : GameState
 		menuSound = Mix_LoadWAV("res/sounds/beep.wav");
 
 		logoRect = SDL_Rect(0, 100, surface.w, surface.h);
-		menuRect = SDL_Rect(0, 200, gameInfo.width, 200);
 		centerHorizontal(logoRect);
 		enforce (surface, "surface is null");
 		logo = SDL_CreateTextureFromSurface(g.renderer, surface);
 		enforce(logo, "could not load logo.png");
+		SDL_FreeSurface(surface);
 
 		menuItems = [
 			MenuItem("new game", delegate void() { gameStates.pushGameState(new Game()); }),
@@ -91,13 +96,15 @@ class Menu : GameState
 			MenuItem("quit", delegate void() { isRunning = false; })
 		];
 
-		auto i = 0;
+		container = new Container(null, LayoutMode.VERTICAL, SizeMode.FILL_PARENT);
+		container.setRect(16, 200, gameInfo.width - 32, 200);
 		foreach (item; menuItems) {
-			item.label.setLocation(16, menuRect.y + i * 40);
-			item.label.width = 500;
-			item.label.height = 36;
-			++i;
+			container.add(item.label);
+			item.sizeAnimation.setFrom(container.x + 12);
+			item.sizeAnimation.setTo(container.x + 32);
 		}
+		container.resize();
+
 		menuItems[0].label.bgColor = Colors.SELECTED;
 	}
 
@@ -189,8 +196,6 @@ class Menu : GameState
 
 		// reder the logo:
 		SDL_RenderCopy(g.renderer, logo, null, &logoRect);
-
-		// TODO: render background:
 
 		// render the menuItems
 		foreach (item; menuItems) {

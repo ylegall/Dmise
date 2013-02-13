@@ -18,7 +18,7 @@ class Game : GameState {
 	}
 
 	~this() {
-		for (entity; entities) {
+		foreach (entity; entities) {
 			delete entity;
 		}
 	}
@@ -53,3 +53,4 @@ class Game : GameState {
 		return true;
 	}
 }
+

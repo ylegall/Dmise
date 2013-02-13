@@ -2,11 +2,13 @@
 module dmise.ui.label;
 
 import dmise.core;
+import dmise.ui.container;
+import dmise.util.types;
 
 /**
 A simple label for displaying text on a rectanglular background.
 */
-class Label : GameObject
+class Label : AbstractContainer, GameObject
 {
 	private {
 		string text;
@@ -16,7 +18,6 @@ class Label : GameObject
 
 	int padding = 4;
 	SDL_Rect textLocation;
-	SDL_Rect rect;
 	bool hasBackground = true;
 	bool hasBorder = false;
 	SDL_Color bgColor = Colors.DARK_GRAY;
@@ -61,6 +62,7 @@ class Label : GameObject
 		resize();
 	}
 
+	override
 	void setLocation(int x, int y) {
 		rect.x = x;
 		rect.y = y;
@@ -68,32 +70,8 @@ class Label : GameObject
 		textLocation.y = rect.y + padding;
 	}
 
-	void setSize(int width, int height) {
-		rect.w = width;
-		rect.h = height;
-	}
-
-	@property
-	auto height(int height) { return rect.h = height; }
-	@property
-	auto height() { return rect.h; }
-
-	@property
-	auto width(int width) { return rect.w = width; }
-	@property
-	auto width() { return rect.w; }
-
-	void setRect(SDL_Rect rect) {
-		this.rect = rect;
-	}
-
-	void onEvent(SDL_Event event) {
-
-	}
-
-	void update(long delta) {
-
-	}
+	void onEvent(SDL_Event event) {}
+	void update(long delta) {}
 
 	void draw(Graphics g) {
 		// render the background

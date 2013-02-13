@@ -23,6 +23,7 @@ private
 	Graphics graphics;
 }
 
+/// manages the stack of game states.
 GameStates gameStates;
 
 package {
@@ -197,3 +198,4 @@ int main(string[] args)
 	shutdown();
 	return 0;
 }
+

@@ -5,25 +5,6 @@ import dmise.util.types;
 
 
 /**
-A simple container to control the layout of ui components.
-*/
-interface IContainer
-{
-	int getWidth();
-	int getHeight();
-	void setWidth(int w);
-	void setHeight(int h);
-	void setLocation(int x, int y);
-	Coord getLocation();
-	void setSize(int w, int h);
-	Size getSize();
-	@property int x(int x);
-	@property int x();
-	@property int y(int y);
-	@property int y();
-}
-
-/**
 Determine how child components are sized.
 */
 enum LayoutMode
@@ -54,8 +35,10 @@ enum Alignment
 /**
 Implements basic container logic.
 */
-mixin template ContainerMixin()
+abstract class AbstractContainer
 {
+	protected SDL_Rect rect;
+
 	int getWidth() {
 		return rect.w;
 	}
@@ -89,6 +72,13 @@ mixin template ContainerMixin()
 		return rect.y;
 	}
 
+	void setRect(int x, int y, int w, int h) {
+		rect.x = x;
+		rect.y = y;
+		rect.w = w;
+		rect.h = h;
+	}
+
 	void setLocation(int x, int y) {
 		rect.x = x; rect.y = y;
 	}
@@ -110,40 +100,57 @@ mixin template ContainerMixin()
 		return Size(rect.w, rect.h);
 	}
 }
+alias AbstractContainer BaseContainer;
 
 
 /**
 Default container implementation.
 */
-class Container : IContainer
+class Container : AbstractContainer
 {
-	mixin ContainerMixin;
-
 	private {
-		SDL_Rect rect;
 		Alignment alignment;
-		IContainer parent;
-		IContainer[] children;
+		BaseContainer parent;
+		BaseContainer[] children;
 	}
+
 	LayoutMode layoutMode;
 	SizeMode sizeMode;
 	int padding = 4;
 
-	this(IContainer parent = null, LayoutMode layoutMode = LayoutMode.VERTICAL) {
+	this(BaseContainer parent = null,
+		LayoutMode layoutMode = LayoutMode.VERTICAL,
+		SizeMode = SizeMode.FILL_PARENT,
+		Alignment = Alignment.LEFT)
+	{
 		this.parent = parent;
+		this.layoutMode = layoutMode;
+		this.sizeMode = sizeMode;
+		this.alignment = alignment;
+	}
+
+	void add(BaseContainer[] child ...) {
+		children ~= child;
+	}
+
+	void setLayoutMode(LayoutMode layoutMode) {
 		this.layoutMode = layoutMode;
 	}
 
-	void add(Container[] child ...) {
-		children ~= child;
-		resize();
+	void setSizeMode(SizeMode sizeMode) {
+		this.sizeMode = sizeMode;
+	}
+
+	void setAlignment(Alignment alignment) {
+		this.alignment = alignment;
 	}
 
 	void resize() {
-		int x = 0;
-		int y = 0;
-		int childHeight = cast(int)(rect.h - (padding * (children.length + 1)) / children.length);
-		int childWidth = cast(int)(rect.w - (padding * (children.length + 1)) / children.length);
+		int x = rect.x;
+		int y = rect.y;
+		int childHeight = cast(int)((rect.h - (padding * (children.length + 1))) / children.length);
+		//writeln("[resize] child height = ", childHeight);
+		int childWidth = cast(int)((rect.w - (padding * (children.length + 1))) / children.length);
 
 		foreach (child; children) {
 			if (layoutMode == LayoutMode.VERTICAL) {
@@ -167,7 +174,7 @@ class Container : IContainer
 		}
 	}
 
-	private auto alignHorizontal(IContainer c) {
+	private auto alignHorizontal(BaseContainer c) {
 		auto base = rect.x + padding;
 		final switch (alignment) {
 			case Alignment.LEFT:
@@ -179,7 +186,7 @@ class Container : IContainer
 		}
 	}
 
-	private auto alignVertical(IContainer c) {
+	private auto alignVertical(BaseContainer c) {
 		auto base = rect.y + padding;
 		final switch (alignment) {
 			case Alignment.LEFT:
