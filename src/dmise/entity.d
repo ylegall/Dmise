@@ -44,14 +44,19 @@ class PlayerShip : MovingEntity {
 	};
 
 	SDL_Rect rect;
+        int frameCharge = 0;
 	override void draw(Graphics graphicsContext) {
 		// reder the logo:
 		rect.x = cast(int)pos.x;
 		rect.y = cast(int)pos.y;
 
-                int frame = this.vel.x ? 4 : 0;
+                if (vel.x || vel.y)
+                    frameCharge = min(frameCharge+1, 60);
+                else
+                    frameCharge = max(frameCharge-1, 0);
+
 		SDL_RenderCopy(graphicsContext.renderer,
-                    getTexture(graphicsContext, "ship-0.gif", frame).texture, null, &rect);
+                    getTexture(graphicsContext, "ship-0.gif", frameCharge/10).texture, null, &rect);
 	};
 	override void onEvent(SDL_Event event) {
 		switch (event.type) {
