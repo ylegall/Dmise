@@ -79,6 +79,7 @@ Download and build Dmise:
     git clone git@github.com:ylegall/Dmise.git
     cd Dmise
     ln -s ../Derelict3/lib lib # Your path here may be different
+    ln -s ../oglconsole oglconsole # Your path here may be different
     make
 
 TODO

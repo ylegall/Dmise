@@ -25,7 +25,7 @@ all : $(NAME)
 	$(DC) $(DFLAGS) -c $< -of$@
 
 $(NAME) : $(OBJS)
-	$(DC) $(DFLAGS) $(LDFLAGS) $^ ../oglconsole-sdl2-850/oglconsole-sdl.o -of$@
+	$(DC) $(DFLAGS) $(LDFLAGS) $^ oglconsole/oglconsole-sdl.o -of$@
 
 run:
 	./$(NAME) $(ARGS)
