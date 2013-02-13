@@ -21,7 +21,7 @@ class Shooter : GameState {
 	void draw(Graphics graphicsContext) {
 		if (!loadedGraphics) {
 			debug writeln("[shooter] draw() loading graphics..");
-			sprite = getTexture(graphicsContext, "ship-0.gif");
+			sprite = getTexture(graphicsContext, "ship-0.gif", 0);
 			loadedGraphics = true;
 		}
 

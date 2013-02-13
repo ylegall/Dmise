@@ -16,13 +16,21 @@ class Texture {
 
 Texture[string] textures;
 
-Texture getTexture(Graphics graphicsContext, string filename, int gifFrame=-1) {
+Texture getTexture(Graphics graphicsContext, string filename, int gifFrame=0) {
 	filename = "res/images/" ~ filename;
 
 	/* Is the texture already loaded? */
-        string textureName = filename;
-        if (gifFrame >= 0)
-            textureName ~= ":0";
+        string textureName;
+
+        if (gifFrame > 0) {
+            auto writer = appender!string;
+            formattedWrite(writer, "%s:%d", filename, gifFrame);
+            textureName = writer.data;
+        } else {
+            textureName = filename;
+        }
+
+        //debug writefln("[texture] looking for texture named \"%s\"", textureName);
 	if (textureName in textures)
 		return textures[textureName];
 
@@ -30,40 +38,48 @@ Texture getTexture(Graphics graphicsContext, string filename, int gifFrame=-1) {
 
         SDL_Surface *surface;
         SDL_RWops *f;
+        Texture texture;
 
         scope(exit) { if (surface) SDL_FreeSurface(surface); surface = null; }
         scope(exit) { if (f) SDL_RWclose(f); f = null; }
 
+        if (gifFrame > 0) {
+            f = SDL_RWFromFile(toStringz(filename), "rb");
+            enforce(f, "SDL_RWFromFile(\"%s\") failed", filename);
+        }
+
         do {
-            if (gifFrame >= 0) {
-                if (gifFrame == 0)
-                    f = SDL_RWFromFile(toStringz(filename), "rb");
-                enforce(f, "SDL_RWFromFile(\"%s\") failed", filename);
+            if (gifFrame > 0) {
+                debug writefln("[texture] IMG_LoadGIFFrame_RW()");
 
                 if (surface)
                     SDL_FreeSurface(surface);
                 surface = IMG_LoadGIFFrame_RW(f, gifFrame);
-                enforce(surface, "surface is null");
 
                 auto writer = appender!string();
                 formattedWrite(writer, "%s:%d", filename, gifFrame);
                 textureName = writer.data;
             } else {
                 /* Use SDL_Image lib to load the image into an SDL_Surface */
+                debug writefln("[texture] IMG_Load()");
                 surface = IMG_Load(toStringz(filename));
-                enforce(surface, "surface is null");
-
                 textureName = filename;
             }
+
+            debug writefln("[texture] surface = %x", surface);
+            if (!surface)
+                return texture;
 
             debug writefln("[texture] image dimensions: %dx%d", surface.w, surface.h);
 
             /* Convert SDL_Surface to SDL_Texture */
-            SDL_Texture* texture = SDL_CreateTextureFromSurface(graphicsContext.renderer, surface);
-            enforce(texture, "texture is null");
+            SDL_Texture* sdlTexture = SDL_CreateTextureFromSurface(graphicsContext.renderer, surface);
 
-            textures[textureName] = new Texture(texture);
-        } while (gifFrame >= 0 && gifFrame < 1 && surface);
+            debug writefln("[texture] storing frame %d from \"%s\" as \"%s\"", gifFrame, filename, textureName);
+            texture = new Texture(sdlTexture);
+            textures[textureName] = texture;
+
+        } while (gifFrame > 0 && surface);
 
 	return textures[filename];
 }
