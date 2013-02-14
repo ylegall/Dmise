@@ -1,6 +1,6 @@
 
 NAME=dmise
-DC=dmd -Isrc
+DC=dmd -I$(SRCDIR) -I$(INCDIR)
 INCDIR=include
 LIBDIR=lib
 SRCDIR=src
