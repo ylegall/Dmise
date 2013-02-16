@@ -20,7 +20,7 @@ class Game : GameState {
 
 	this() {
 		debug writeln("[game] this()");
-		playerShip = new PlayerShip();
+		playerShip = new PlayerShip(this);
 		entities.insert(playerShip);
 	}
 
@@ -28,6 +28,10 @@ class Game : GameState {
 		foreach (entity; entities) {
 			delete entity;
 		}
+	}
+
+	void addProjectile(Projectile p) {
+		entities.insert(p);
 	}
 
 	/* TODO refactor this to occur elsewhere */

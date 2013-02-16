@@ -41,6 +41,15 @@ auto setLocation(SDL_Rect rect, Point p)
 }
 
 /**
+Set the location of an SDL_Rect.
+*/
+auto setLocation(SDL_Rect rect, int x, int y)
+{
+	rect.x = x;
+	rect.y = y;
+}
+
+/**
 Get the center point of a rectangle.
 */
 auto getCenterPoint(SDL_Rect rect) {

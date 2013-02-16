@@ -10,9 +10,13 @@ public
 
 	import dmise.main;
 	import dmise.gamestates;
+	import dmise.entity;
 	import dmise.menu;
 	import dmise.animation.ease;
 	import dmise.animation.animation;
+	import dmise.weapon.weapon;
+	import dmise.util.vector;
+	import dmise.util.types;
 
 	//import std.conv;
 
@@ -60,8 +64,8 @@ abstract class GameState : GameObject
 
 /**
 Holds game information and metadata.
- */
-struct GameInfo
+*/
+immutable struct GameInfo
 {
 	string name = "Dmise";
 	int height = 800;
@@ -74,9 +78,18 @@ struct GameInfo
 }
 
 /**
+In-game configurable settings, load from properties file
+*/
+struct GameSettings
+{
+	bool musicEnabled = true;
+	bool soundEnabled = true;
+}
+
+/**
 Global colors.
 TODO: read from configuration?
- */
+*/
 struct Colors {
 	enum BLUE = SDL_Color(0, 128, 255);
 	enum DARK_GRAY = SDL_Color(64, 64, 64);
@@ -175,6 +188,16 @@ TODO: move to some better location.
 auto makeTexture(Graphics g, SDL_Surface* surface)
 {
 	return SDL_CreateTextureFromSurface(g.renderer, surface);
+}
+
+/**
+Utility to get the current mouse position;
+TODO: move to some better location.
+*/
+auto getMousePosition() {
+	Coord coord;
+	SDL_GetMouseState(&coord.x, &coord.y);
+	return coord;
 }
 
 /**

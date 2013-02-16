@@ -100,11 +100,10 @@ private auto init()
     OGLCONSOLE_Create();
 }
 
+enum frameDuration = 1.0/60.0;
 private auto delay(long elapsed)
 {
-	//writeln(elapsed);
 	auto remaining = max(2, 17 - elapsed);
-	//debug writeln("sleeping for ", remaining);
 	SDL_Delay(cast(uint)remaining);
 }
 
@@ -124,8 +123,8 @@ private auto run()
 				return;
 			}
 
-                        if (!OGLCONSOLE_SDLEvent(&event))
-                            gameStates.onEvent(event);
+			if (!OGLCONSOLE_SDLEvent(&event))
+				gameStates.onEvent(event);
 		}
 
 		timer.stop();
@@ -134,7 +133,7 @@ private auto run()
 		timer.reset();
 		timer.start();
 		gameStates.draw(graphics);
-                OGLCONSOLE_Draw();
+		OGLCONSOLE_Draw();
 		delay(elapsed);
 		SDL_RenderPresent(graphics.renderer);
 		setColor(graphics.renderer, Colors.BACKGROUND);
@@ -170,6 +169,8 @@ private auto shutdown()
 		}
 	}
 
+
+	TTF_CloseFont(graphics.font);
 	debug shutdownLog("TTF_Quit");
 	TTF_Quit();
 	debug shutdownLog("Mix_CloseAudio");
@@ -193,7 +194,6 @@ int main(string[] args)
 {
 	// load derelict bindings:
 	DerelictSDL2.load();
-	//DerelictSDL2Image.load();
 	DerelictSDL2Image.load("lib/libSDL2_image.so");
 	DerelictSDL2ttf.load("lib/libSDL2_ttf.so");
 	DerelictSDL2Mixer.load("lib/libSDL2_mixer.so");

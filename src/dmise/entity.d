@@ -1,14 +1,15 @@
 module dmise.entity;
 
 import dmise.core;
-import dmise.util.vector;
-import dmise.util.types;
+import dmise.game;
 import dmise.texture;
+import dmise.util.types;
+import dmise.util.vector;
 
 alias Vector2D!() Vec;
 
 /**
-
+An Entity is a Game object with a position vector.
 */
 abstract class Entity : GameObject {
 	Vec pos;
@@ -22,7 +23,7 @@ abstract class Entity : GameObject {
 }
 
 /**
-
+A MovingEntity has both position and velocity vectors.
 */
 class MovingEntity : Entity {
 	Vec vel;
@@ -33,7 +34,8 @@ class MovingEntity : Entity {
 	override void draw(Graphics g) {}
 
 	override void update(long delta) {
-		this.pos = this.pos + this.vel;
+		//this.pos = this.pos + this.vel;
+		this.pos += this.vel;
 		super.update(delta);
 	}
 }
@@ -60,27 +62,38 @@ class PlayerShip : MovingEntity
 		Rotation rotation;            // rotation direction
 		SDL_Rect rect;
 		bool isBoosting;
+		bool isFiring;
 		Texture shipTexture;
-                int propulsionVisualPower = 0;
+		int propulsionVisualPower = 0;
 
 		auto shields = 100;
 		auto hullIntegrity = 100;
 		auto MAX_VELOCITY = 36;       // TODO: load from configuration
-		enum rotationSpeed = 0.02;    // TODO: load from configuration
+		enum rotationSpeed = 0.03;    // TODO: load from configuration
 
 		enum sinCoef = sin(rotationSpeed);
 		enum cosCoef = cos(rotationSpeed);
+
+		Weapon[] weapons;
+		uint weaponIndex = 0;
 	}
 
-	this(Vec pos, Vec vel) {
+	Game game;
+
+	// TODO: better way to insert projectiles
+	this(Vec pos, Vec vel, Game game) {
 		super(pos, vel);
 		rect = SDL_Rect(0, 0, 48, 48);
 		shipTexture = getTexture(getGraphics(), "ship-0.gif");
 		dir = Vector(0,-1);
+
+		weapons = [new DefaultWeapon()];
+
+		this.game = game;
 	}
 
-	this() {
-		this(Vec(100.0, 100.0), Vec(0.0, 0.0));
+	this(Game game) {
+		this(Vec(100.0, 100.0), Vec(0.0, 0.0), game);
 	}
 
 	~this() {
@@ -88,6 +101,18 @@ class PlayerShip : MovingEntity
 	}
 
 	override void update(long delta) {
+
+		weapons[weaponIndex].update(delta);
+		auto weapon = weapons[weaponIndex];
+		if (weapon.canFire() && isFiring) {
+			// get the mouse position:
+			Coord c = getMousePosition();
+			writeln("mouse = ", c);
+			auto v = Vector(c.x - pos.x, c.y - pos.y).direction();
+			writeln("projectile dir = ", v);
+			game.addProjectile(weapon.fire(pos, v));
+		}
+
 		// update the direction by applying rotation matrix:
 		final switch (rotation) {
 			case Rotation.CLOCKWISE:
@@ -169,6 +194,17 @@ class PlayerShip : MovingEntity
 		}
 	}
 
+	void onMouseButtonDown(SDL_MouseButtonEvent mouseEvent) {
+		debug writeln("[PlayerShip] onMouseButtonDown()");
+		isFiring = true;
+	}
+
+	void onMouseButtonUp(SDL_MouseButtonEvent mouseEvent) {
+		debug writeln("[PlayerShip] onMouseButtonUp()");
+		isFiring = false;
+		weapons[weaponIndex].prepare();
+	}
+
 	override void onEvent(SDL_Event event) {
 		switch (event.type) {
 			case SDL_KEYUP:
@@ -177,6 +213,15 @@ class PlayerShip : MovingEntity
 			case SDL_KEYDOWN:
 				onKeyPress(event.key);
 				break;
+
+			case SDL_MOUSEBUTTONDOWN:
+				onMouseButtonDown(event.button);
+				break;
+
+			case SDL_MOUSEBUTTONUP:
+				onMouseButtonUp(event.button);
+				break;
+
 			default:
 				break;
 		}

@@ -131,6 +131,7 @@ struct Vector2D(T=real)
 		auto mag = magnitude();
 		return (mag) ? (this * (1.0/mag)) : Vector2D!T();
 	}
+	alias direction unit;
 
 	unittest {
 		auto v1 = Vector(1,0);
