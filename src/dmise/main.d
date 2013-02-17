@@ -117,7 +117,7 @@ private auto run()
 
 	timer.start();
 	while (gameStates.isAlive()) {
-		if (SDL_PollEvent(&event)) {
+		while (SDL_PollEvent(&event)) {
 			//debug writeln("received event type: ", event.type);
 			if (event.type == SDL_QUIT) {
 				return;
