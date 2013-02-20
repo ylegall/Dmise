@@ -244,7 +244,3 @@ class LinkedList(T)
 	}
 }
 
-void main(string[] args) {
-	auto list = new LinkedList!int();
-}
-
