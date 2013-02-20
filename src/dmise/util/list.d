@@ -117,12 +117,12 @@ class LinkedList(T)
 	}
 
 	// adds support for 'foreach' statements
-	int opApply(int delegate(T item) dg) {
+	int opApply(int delegate(ref T) dg) {
 		int result = 0;
 		Node* current = head;
 		while (current) {
 			result = dg(current.val);
-			if (current.val) {
+			if (result) {
 				break;
 			}
 			current = current.next;
@@ -137,6 +137,7 @@ class LinkedList(T)
 			assert(item == array[i]);
 			++i;
 		}
+		assert(i == 5);
 	}
 
 	/**

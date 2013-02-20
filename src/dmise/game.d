@@ -5,55 +5,60 @@ import dmise.entity;
 import dmise.core;
 import dmise.texture;
 import dmise.util.stack;
+import dmise.util.list;
 
-import std.container;
+//import std.container;
 
 class Game : GameState {
 
 	private
 	{
 		bool isRunning = true;
+		Texture sprite;
 	}
 
 	PlayerShip playerShip;
-	SList!(Entity) entities;
+	LinkedList!(Entity) entities;
 
 	this() {
 		debug writeln("[game] this()");
 		playerShip = new PlayerShip(this);
-		entities.insert(playerShip);
+		entities = new LinkedList!(Entity)();
+
+		debug writeln("[game] draw() loading graphics..");
+		sprite = getTexture(getGraphics(), "ship-0.gif");
 	}
 
 	~this() {
 		foreach (entity; entities) {
 			delete entity;
 		}
+		entities.clear();
 	}
 
 	void addProjectile(Projectile p) {
-		entities.insert(p);
+		entities.add(p);
 	}
 
-	/* TODO refactor this to occur elsewhere */
-	bool loadedGraphics = false;
-	Texture sprite;
-
-	void draw(Graphics graphicsContext) {
-		if (!loadedGraphics) {
-			debug writeln("[game] draw() loading graphics..");
-			sprite = getTexture(graphicsContext, "ship-0.gif");
-			loadedGraphics = true;
-		}
-
+	void draw(Graphics g) {
 		foreach (entity; entities) {
-			entity.draw(graphicsContext);
+			entity.draw(g);
 		}
+		playerShip.draw(g);
 	}
 
 	void update(long delta) {
-		foreach (entity; entities) {
-			entity.update(delta);
+		auto it = entities.getIterator();
+		while (it.hasNext()) {
+			auto entity = it.next();
+			if (entity.isAlive()) {
+				entity.update(delta);
+			} else {
+				it.remove();
+			}
 		}
+
+		playerShip.update(delta);
 	}
 
 	void onEvent(SDL_Event event) {

@@ -86,6 +86,7 @@ class DefaultWeapon : Weapon
 
 /**
 The projectile for the standard weapon.
+TODO: rename
 */
 class DefaultShot : Projectile
 {
@@ -129,7 +130,7 @@ class DefaultShot : Projectile
 
 	override
 	bool isAlive() {
-		return speed > 0;
+		return speed > 1;
 	}
 }
 
