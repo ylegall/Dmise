@@ -11,10 +11,16 @@ abstract class Weapon : Updateable
 {
 	protected {
 		int ammo;
+		Mix_Chunk* sound;
 	}
 
-	this() {
+	this(string soundFile) {
+		sound = loadSound(soundFile);
+		enforce(sound, "sound is null");
+	}
 
+	~this() {
+		Mix_FreeChunk(sound);
 	}
 
 	bool isEmpty() {
@@ -22,9 +28,7 @@ abstract class Weapon : Updateable
 	}
 
 	override
-	void update(long delta) {
-		// TODO: e.g. update reload time
-	}
+	void update(long delta) {}
 
 	bool canFire();
 
@@ -48,7 +52,6 @@ abstract class Projectile : MovingEntity
 }
 
 
-
 /**
 The standard weapon with which the player is equipped.
 */
@@ -56,6 +59,10 @@ class DefaultWeapon : Weapon
 {
 	private {
 		int reloadTime = 0;
+	}
+
+	this() {
+		super("shot1.wav");
 	}
 
 	override
@@ -80,6 +87,7 @@ class DefaultWeapon : Weapon
 	override
 	DefaultShot fire(Vector pos, Vector dir) {
 		reloadTime = 256;
+		playSound(sound);
 		return new DefaultShot(pos, dir);
 	}
 }
@@ -133,6 +141,5 @@ class DefaultShot : Projectile
 		return speed > 1;
 	}
 }
-
 
 

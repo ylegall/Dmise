@@ -14,6 +14,7 @@ public
 	import dmise.menu;
 	import dmise.animation.ease;
 	import dmise.animation.animation;
+	import dmise.sound;
 	import dmise.weapon.weapon;
 	import dmise.util.vector;
 	import dmise.util.types;
@@ -34,11 +35,17 @@ public
 	}
 }
 
+/**
+Interface for objects that can be drawn.
+*/
 interface Drawable
 {
 	void draw(Graphics g);
 }
 
+/**
+Interface for objects that can be updated.
+*/
 interface Updateable
 {
 	void update(long delta);
@@ -46,7 +53,7 @@ interface Updateable
 
 /**
 All game objects will have the following functions:
- */
+*/
 interface GameObject : Drawable, Updateable
 {
 	bool isAlive();
@@ -55,7 +62,7 @@ interface GameObject : Drawable, Updateable
 
 /**
 
- */
+*/
 abstract class GameState : GameObject
 {
 	void onHide() {}
