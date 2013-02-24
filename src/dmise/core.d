@@ -15,6 +15,7 @@ public
 	import dmise.animation.ease;
 	import dmise.animation.animation;
 	import dmise.sound;
+	import dmise.texture;
 	import dmise.weapon.weapon;
 	import dmise.util.vector;
 	import dmise.util.types;
