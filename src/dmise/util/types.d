@@ -53,7 +53,8 @@ auto setLocation(SDL_Rect rect, int x, int y)
 Get the center point of a rectangle.
 */
 auto getCenterPoint(SDL_Rect rect) {
-	return SDL_Point(rect.x + rect.w/2, rect.y + rect.h/2);
+	//return SDL_Point(rect.x + rect.w/2, rect.y + rect.h/2);
+	return Vector(rect.x + rect.w/2, rect.y + rect.h/2);
 }
 
 /**
