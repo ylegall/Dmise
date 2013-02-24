@@ -70,8 +70,8 @@ class Menu : GameState
 		SDL_Rect logoRect;
 		Container container;
 
-		SDL_Color fgColor = {0, 0, 0};
-		SDL_Color bgColor = {0, 255, 0};
+		//SDL_Color fgColor = {0, 0, 0};
+		//SDL_Color bgColor = {0, 255, 0};
 
 		Mix_Chunk* menuSound;
 	}
