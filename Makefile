@@ -30,6 +30,9 @@ $(NAME) : $(OBJS)
 run:
 	./$(NAME) $(ARGS)
 
+test:
+	rdmd -I$(SRCDIR) -I$(INCDIR) test.d src/dmise/util/vector.d src/dmise/util/list.d src/dmise/util/properties.d -unittest
+
 clean:
 	rm -rf $(OBJS) $(NAME)
 

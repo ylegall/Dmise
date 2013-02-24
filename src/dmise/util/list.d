@@ -1,5 +1,5 @@
 
-module list.d;
+module dmise.util.list;
 
 import std.array;
 import std.exception;
