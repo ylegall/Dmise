@@ -27,6 +27,11 @@ private
 /// manages the stack of game states.
 GameStates gameStates;
 
+TextureManager textureManager;
+auto getTexture(Graphics g, string filename, int gifFrame=0) {
+	return textureManager.getTexture(g, filename, gifFrame);
+}
+
 package {
 	GameInfo gameInfo;
 }
@@ -152,6 +157,7 @@ auto getGraphics() {
 private auto shutdown()
 {
 	gameStates.shutdown();
+	textureManager.shutdown();
 
 	debug {
 		auto shutdownLogWriter = appender!string();
