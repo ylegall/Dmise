@@ -34,7 +34,6 @@ class MovingEntity : Entity {
 	override void draw(Graphics g) {}
 
 	override void update(long delta) {
-		//this.pos = this.pos + this.vel;
 		this.pos += this.vel;
 		super.update(delta);
 	}
@@ -102,15 +101,17 @@ class PlayerShip : MovingEntity
 
 	override void update(long delta) {
 
+		// update the selected weapon:
 		weapons[weaponIndex].update(delta);
 		auto weapon = weapons[weaponIndex];
+
 		if (weapon.canFire() && isFiring) {
 			// get the mouse position:
-			Coord c = getMousePosition();
-			writeln("mouse = ", c);
-			auto v = Vector(c.x - pos.x, c.y - pos.y).direction();
-			writeln("projectile dir = ", v);
-			game.addProjectile(weapon.fire(pos, v));
+			Coord mouse = getMousePosition();
+			auto center = getCenterPoint(rect);
+			auto v = Vector(mouse.x - center.x, mouse.y - center.y).direction();
+			game.addProjectile(weapon.fire(center, v));
+			//game.addProjectile(weapon.fire(getCenterPoint(rect), v));
 		}
 
 		// update the direction by applying rotation matrix:
@@ -154,6 +155,8 @@ class PlayerShip : MovingEntity
             propulsionVisualPower = min(propulsionVisualPower+1, 60);
         else
             propulsionVisualPower = max(propulsionVisualPower-1, 0);
+
+        // TODO: can the getTexture() be called in the contructor to preload the textures?
 		SDL_RenderCopyEx(g.renderer, getTexture(g, "ship-0.gif",
                     propulsionVisualPower/10).texture, null, &rect, angle, null, SDL_FLIP_NONE);
 	};
@@ -195,12 +198,12 @@ class PlayerShip : MovingEntity
 	}
 
 	void onMouseButtonDown(SDL_MouseButtonEvent mouseEvent) {
-		debug writeln("[PlayerShip] onMouseButtonDown()");
+		//debug writeln("[PlayerShip] onMouseButtonDown()");
 		isFiring = true;
 	}
 
 	void onMouseButtonUp(SDL_MouseButtonEvent mouseEvent) {
-		debug writeln("[PlayerShip] onMouseButtonUp()");
+		//debug writeln("[PlayerShip] onMouseButtonUp()");
 		isFiring = false;
 		weapons[weaponIndex].prepare();
 	}
@@ -227,3 +230,4 @@ class PlayerShip : MovingEntity
 		}
 	}
 }
+
