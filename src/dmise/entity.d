@@ -100,7 +100,6 @@ class PlayerShip : MovingEntity
 	}
 
 	override void update(long delta) {
-
 		// update the selected weapon:
 		weapons[weaponIndex].update(delta);
 		auto weapon = weapons[weaponIndex];

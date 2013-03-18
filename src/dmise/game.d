@@ -14,7 +14,6 @@ class Game : GameState {
 	private
 	{
 		bool isRunning = true;
-		Texture sprite;
 	}
 
 	PlayerShip playerShip;
@@ -26,7 +25,6 @@ class Game : GameState {
 		entities = new LinkedList!(Entity)();
 
 		debug writeln("[game] draw() loading graphics..");
-		sprite = getTexture(getGraphics(), "ship-0.gif");
 	}
 
 	~this() {
@@ -34,6 +32,7 @@ class Game : GameState {
 			delete entity;
 		}
 		entities.clear();
+		delete playerShip;
 	}
 
 	void addProjectile(Projectile p) {
