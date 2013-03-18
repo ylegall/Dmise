@@ -16,7 +16,7 @@ class Texture {
 	}
 
 	~this() {
-		SDL_DestroyTexture(texture);
+		if (texture) SDL_DestroyTexture(texture);
 	}
 }
 
