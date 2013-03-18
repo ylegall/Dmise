@@ -1,4 +1,5 @@
 module dmise.texture;
+
 import dmise.core;
 import std.string : toStringz;
 import std.format : appender;
