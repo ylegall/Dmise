@@ -16,7 +16,7 @@ abstract class Weapon : Updateable
 
 	this(string soundFile) {
 		sound = loadSound(soundFile);
-		enforce(sound, "sound is null");
+		enforce(sound, soundFile ~ " sound is null");
 	}
 
 	~this() {
