@@ -24,7 +24,12 @@ all : $(NAME)
 %.o : %.d
 	$(DC) $(DFLAGS) -c $< -of$@
 
-$(NAME) : $(OBJS)
+# Compiles each source file individually
+#$(NAME) : $(OBJS)
+#	$(DC) $(DFLAGS) $(LDFLAGS) $^ oglconsole/oglconsole-sdl.o -of$@
+
+# Compiles all source at once
+$(NAME) : $(FILES)
 	$(DC) $(DFLAGS) $(LDFLAGS) $^ oglconsole/oglconsole-sdl.o -of$@
 
 run:
