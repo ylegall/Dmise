@@ -42,6 +42,7 @@ abstract class Weapon : Updateable
 /**
 
 */
+
 abstract class Projectile : MovingEntity
 {
 	this(Vec pos, Vec vel) {
@@ -99,33 +100,34 @@ TODO: rename
 class DefaultShot : Projectile
 {
 	enum MAX_SPEED = 200.0;
+        Vec heading;
+
 	private {
 		Texture texture;
 		SDL_Rect rect;
-		real speed = MAX_SPEED;
 	}
 
 	this(Vec pos, Vec dir) {
-		super(pos, dir);
+                heading = dir;
+		super(pos, dir * MAX_SPEED);
 		texture = getTexture(getGraphics(), "blueShot-1.png");
-		//rect = SDL_Rect(cast(int)pos.x, cast(int)pos.y, 32, speed);
-		rect = SDL_Rect(cast(int)pos.x, cast(int)pos.y, 32, 32);
 	}
 
 	override
 	void update(long delta) {
-		this.speed *= 0.92;
-		this.pos += (this.vel * (speed * delta/64 ));
-		rect.x = cast(int)pos.x;
-		rect.y = cast(int)pos.y;
-		rect.h = cast(int)(32 + speed/2);
-		//rect.h = cast(int)(max(32,speed/2));
+                super.update(delta);
+		this.vel *= 0.92; // "delta" should factor into deceleration
 	}
 
 	override
 	void draw(Graphics g) {
+		rect = SDL_Rect(cast(int)pos.x, cast(int)pos.y, 32, 32);
+		rect.h = cast(int)(32 + getSpeed()/2);
+		rect.x = cast(int)pos.x;
+		rect.y = cast(int)pos.y - rect.h/2;
+
 		auto angle = radiansToDegrees(atan2(vel.x, -vel.y));
-		SDL_SetTextureAlphaMod(texture, cast(ubyte) (255 * (speed/MAX_SPEED)) );
+		SDL_SetTextureAlphaMod(texture, cast(ubyte) (255 * (getSpeed/MAX_SPEED)) );
 		SDL_RenderCopyEx(
 			g.renderer,
 			texture,
@@ -138,8 +140,12 @@ class DefaultShot : Projectile
 
 	override
 	bool isAlive() {
-		return speed > 1;
+		return this.vel.magnitude() > 1;
 	}
+
+        real getSpeed() {
+          return this.vel.magnitude();
+        }
 }
 
 

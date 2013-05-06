@@ -34,7 +34,7 @@ class MovingEntity : Entity {
 	override void draw(Graphics g) {}
 
 	override void update(long delta) {
-		this.pos += this.vel;
+		this.pos += this.vel * (cast(real)delta/5.0);
 		super.update(delta);
 	}
 }
@@ -108,7 +108,7 @@ class PlayerShip : MovingEntity
 		if (weapon.canFire() && isFiring) {
 			// get the mouse position:
 			Coord mouse = getMousePosition();
-			auto center = getCenterPoint(rect);
+			auto center = pos;
 			auto v = Vector(mouse.x - center.x, mouse.y - center.y).direction();
 			game.addProjectile(weapon.fire(center, v));
 			//game.addProjectile(weapon.fire(getCenterPoint(rect), v));
@@ -144,8 +144,8 @@ class PlayerShip : MovingEntity
 	};
 
 	override void draw(Graphics g) {
-		rect.x = cast(int)pos.x;
-		rect.y = cast(int)pos.y;
+		rect.x = cast(int)pos.x - rect.w/2;
+		rect.y = cast(int)pos.y - rect.h/2;
 
 		//SDL_RenderCopy(g.renderer, shipTexture, null, &rect);
 
