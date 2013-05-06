@@ -99,7 +99,7 @@ TODO: rename
 */
 class DefaultShot : Projectile
 {
-	enum MAX_SPEED = 200.0;
+	enum MAX_SPEED = 200.0/64.0;
         Vec heading;
 
 	private {
@@ -122,7 +122,7 @@ class DefaultShot : Projectile
 	override
 	void draw(Graphics g) {
 		rect = SDL_Rect(cast(int)pos.x, cast(int)pos.y, 32, 32);
-		rect.h = cast(int)(32 + getSpeed()/2);
+		rect.h = cast(int)(32 + getSpeed()*32);
 		rect.x = cast(int)pos.x;
 		rect.y = cast(int)pos.y - rect.h/2;
 
