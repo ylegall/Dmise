@@ -34,7 +34,7 @@ class MovingEntity : Entity {
 	override void draw(Graphics g) {}
 
 	override void update(long delta) {
-		this.pos += this.vel;
+		this.pos += this.vel * cast(real)delta;
 		super.update(delta);
 	}
 }
@@ -67,7 +67,8 @@ class PlayerShip : MovingEntity
 
 		auto shields = 100;
 		auto hullIntegrity = 100;
-		auto MAX_VELOCITY = 36;       // TODO: load from configuration
+                real boostAcceleration = 0.25; // TODO: load from configuration
+		real MAX_VELOCITY = 0.42;       // TODO: load from configuration
 		enum rotationSpeed = 0.03;    // TODO: load from configuration
 
 		enum sinCoef = sin(rotationSpeed);
@@ -107,7 +108,7 @@ class PlayerShip : MovingEntity
 		if (weapon.canFire() && isFiring) {
 			// get the mouse position:
 			Coord mouse = getMousePosition();
-			auto center = getCenterPoint(rect);
+			auto center = pos;
 			auto v = Vector(mouse.x - center.x, mouse.y - center.y).direction();
 			game.addProjectile(weapon.fire(center, v));
 			//game.addProjectile(weapon.fire(getCenterPoint(rect), v));
@@ -131,7 +132,7 @@ class PlayerShip : MovingEntity
 		dir = dir.direction();
 
 		if (isBoosting) {
-			vel += (dir * (delta / 1000.0));
+			vel += (dir * boostAcceleration * (delta / 1000.0));
 
 			// limit the maximum velocity:
 			if (vel.magnitude() > MAX_VELOCITY) {
@@ -143,8 +144,8 @@ class PlayerShip : MovingEntity
 	};
 
 	override void draw(Graphics g) {
-		rect.x = cast(int)pos.x;
-		rect.y = cast(int)pos.y;
+		rect.x = cast(int)pos.x - rect.w/2;
+		rect.y = cast(int)pos.y - rect.h/2;
 
 		//SDL_RenderCopy(g.renderer, shipTexture, null, &rect);
 
