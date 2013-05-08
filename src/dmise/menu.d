@@ -79,11 +79,11 @@ class Menu : GameState
 	this() {
 		auto g = getGraphics();
 		SDL_Surface* surface = IMG_Load("res/images/logo.png");
+		enforce (surface, "surface is null");
 		menuSound = Mix_LoadWAV("res/sounds/beep.wav");
 
 		logoRect = SDL_Rect(0, 100, surface.w, surface.h);
 		centerHorizontal(logoRect);
-		enforce (surface, "surface is null");
 		logo = SDL_CreateTextureFromSurface(g.renderer, surface);
 		enforce(logo, "could not load logo.png");
 		SDL_FreeSurface(surface);

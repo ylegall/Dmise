@@ -14,6 +14,8 @@ class Game : GameState {
 	private
 	{
 		bool isRunning = true;
+		Texture background;
+		SDL_Rect bgRect;
 	}
 
 	PlayerShip playerShip;
@@ -24,7 +26,8 @@ class Game : GameState {
 		playerShip = new PlayerShip(this);
 		entities = new LinkedList!(Entity)();
 
-		debug writeln("[game] draw() loading graphics..");
+		bgRect = SDL_Rect(0,0, gameInfo.width, gameInfo.height);
+		background = getTexture(getGraphics(), "bg.png");
 	}
 
 	~this() {
@@ -33,6 +36,7 @@ class Game : GameState {
 		}
 		entities.clear();
 		delete playerShip;
+		delete background;
 	}
 
 	void addProjectile(Projectile p) {
@@ -40,6 +44,10 @@ class Game : GameState {
 	}
 
 	void draw(Graphics g) {
+
+		// draw the background. eventually this may be different for each level:
+		SDL_RenderCopy(g.renderer, background, null, &bgRect);
+
 		foreach (entity; entities) {
 			entity.draw(g);
 		}

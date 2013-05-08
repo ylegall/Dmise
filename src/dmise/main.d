@@ -175,7 +175,6 @@ private auto shutdown()
 		}
 	}
 
-
 	TTF_CloseFont(graphics.font);
 	debug shutdownLog("TTF_Quit");
 	TTF_Quit();

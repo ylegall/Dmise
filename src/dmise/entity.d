@@ -65,11 +65,11 @@ class PlayerShip : MovingEntity
 		Texture shipTexture;
 		int propulsionVisualPower = 0;
 
-		auto shields = 100;
-		auto hullIntegrity = 100;
-                real boostAcceleration = 0.25; // TODO: load from configuration
+		auto shields = 100;             // TODO: load from configuration
+		auto hullIntegrity = 100;       // TODO: load from configuration
+		real boostAcceleration = 0.25;  // TODO: load from configuration
 		real MAX_VELOCITY = 0.42;       // TODO: load from configuration
-		enum rotationSpeed = 0.03;    // TODO: load from configuration
+		enum rotationSpeed = 0.03;      // TODO: load from configuration
 
 		enum sinCoef = sin(rotationSpeed);
 		enum cosCoef = cos(rotationSpeed);
@@ -83,12 +83,11 @@ class PlayerShip : MovingEntity
 	// TODO: better way to insert projectiles
 	this(Vec pos, Vec vel, Game game) {
 		super(pos, vel);
-		rect = SDL_Rect(0, 0, 48, 48);
+		const SIZE = 48;
+		rect = SDL_Rect(0, 0, SIZE, SIZE);
 		shipTexture = getTexture(getGraphics(), "ship-0.gif");
 		dir = Vector(0,-1);
-
 		weapons = [new DefaultWeapon()];
-
 		this.game = game;
 	}
 

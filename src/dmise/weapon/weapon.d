@@ -100,7 +100,7 @@ TODO: rename
 class DefaultShot : Projectile
 {
 	enum MAX_SPEED = 200.0/64.0;
-        Vec heading;
+	Vec heading;
 
 	private {
 		Texture texture;
@@ -108,15 +108,15 @@ class DefaultShot : Projectile
 	}
 
 	this(Vec pos, Vec dir) {
-                heading = dir;
+		heading = dir;
 		super(pos, dir * MAX_SPEED);
 		texture = getTexture(getGraphics(), "blueShot-1.png");
 	}
 
 	override
 	void update(long delta) {
-                super.update(delta);
-		this.vel *= 0.92; // "delta" should factor into deceleration
+		super.update(delta);
+		this.vel *= 0.92;      // TODO: "delta" should factor into deceleration
 	}
 
 	override
@@ -139,13 +139,13 @@ class DefaultShot : Projectile
 	}
 
 	override
-	bool isAlive() {
+	bool isAlive() const {
 		return this.vel.magnitude() > 1;
 	}
 
-        real getSpeed() {
-          return this.vel.magnitude();
-        }
+	real getSpeed() const {
+		return this.vel.magnitude();
+	}
 }
 
 

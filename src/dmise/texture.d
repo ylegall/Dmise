@@ -101,5 +101,18 @@ struct TextureManager
 
 		return textures[filename];
 	}
+
+}
+
+auto loadImage(string filename) {
+	auto g = getGraphics();
+	//SDL_Surface* surface = IMG_Load(toStringz("res/images/" ~ filename));
+	SDL_Surface* surface = IMG_Load(toStringz(filename));
+	//SDL_Surface* surface = IMG_Load(toStringz("res/images/logo.png"));
+	enforce (surface, "surface is null");
+	auto texture = SDL_CreateTextureFromSurface(g.renderer, surface);
+	enforce(texture, "could not load texture");
+	SDL_FreeSurface(surface);
+	return texture;
 }
 
