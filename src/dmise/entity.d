@@ -207,6 +207,8 @@ class PlayerShip : MovingEntity
 		weapons[weaponIndex].prepare();
 	}
 
+	auto getPosition() { return pos; };
+
 	override void onEvent(SDL_Event event) {
 		switch (event.type) {
 			case SDL_KEYUP:

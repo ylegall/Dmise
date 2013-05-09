@@ -2,6 +2,7 @@
 module dmise.game;
 
 import dmise.entity;
+import dmise.camera;
 import dmise.core;
 import dmise.texture;
 import dmise.util.stack;
@@ -18,12 +19,14 @@ class Game : GameState {
 		SDL_Rect bgRect;
 	}
 
+	Camera camera;
 	PlayerShip playerShip;
 	LinkedList!(Entity) entities;
 
 	this() {
 		debug writeln("[game] this()");
 		playerShip = new PlayerShip(this);
+		camera = new Camera();
 		entities = new LinkedList!(Entity)();
 
 		bgRect = SDL_Rect(0,0, gameInfo.width, gameInfo.height);
@@ -46,7 +49,8 @@ class Game : GameState {
 	void draw(Graphics g) {
 
 		// draw the background. eventually this may be different for each level:
-		SDL_RenderCopy(g.renderer, background, null, &bgRect);
+		//SDL_RenderCopy(g.renderer, background, null, &bgRect);
+		camera.draw(g);
 
 		foreach (entity; entities) {
 			entity.draw(g);
@@ -66,6 +70,9 @@ class Game : GameState {
 		}
 
 		playerShip.update(delta);
+		camera.update(delta);
+		camera.setPosition(playerShip.getPosition());
+		// update background
 	}
 
 	void onEvent(SDL_Event event) {
