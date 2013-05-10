@@ -2,7 +2,6 @@ module dmise.main;
 
 import std.stdio : writefln, writeln;
 import dmise.core;
-import dmise.ui.oglconsole;
 
 
 debug
@@ -102,7 +101,6 @@ private auto init()
 	}
 
     gameStates.init();
-    OGLCONSOLE_Create();
 }
 
 enum frameDuration = 1.0/60.0;
@@ -128,8 +126,7 @@ private auto run()
 				return;
 			}
 
-			if (!OGLCONSOLE_SDLEvent(&event))
-				gameStates.onEvent(event);
+                        gameStates.onEvent(event);
 		}
 
 		timer.stop();
@@ -138,7 +135,6 @@ private auto run()
 		timer.reset();
 		timer.start();
 		gameStates.draw(graphics);
-		OGLCONSOLE_Draw();
 		delay(elapsed);
 		SDL_RenderPresent(graphics.renderer);
 		setColor(graphics.renderer, Colors.BACKGROUND);
