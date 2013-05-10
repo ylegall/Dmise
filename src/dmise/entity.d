@@ -84,7 +84,14 @@ class PlayerShip : MovingEntity
 	this(Vec pos, Vec vel, Game game) {
 		super(pos, vel);
 		const SIZE = 48;
-		rect = SDL_Rect(0, 0, SIZE, SIZE);
+
+		// always draw the ship in the center of the screen
+		rect = SDL_Rect(
+			gameInfo.width/2 - SIZE/2,
+			gameInfo.height/2 - SIZE/2,
+			SIZE,
+			SIZE);
+
 		shipTexture = getTexture(getGraphics(), "ship-0.gif");
 		dir = Vector(0,-1);
 		weapons = [new DefaultWeapon()];
@@ -143,10 +150,10 @@ class PlayerShip : MovingEntity
 	};
 
 	override void draw(Graphics g) {
-		rect.x = cast(int)pos.x - rect.w/2;
-		rect.y = cast(int)pos.y - rect.h/2;
 
-		//SDL_RenderCopy(g.renderer, shipTexture, null, &rect);
+		// always draw the ship in the center of the screen
+		//rect.x = cast(int)pos.x - rect.w/2;
+		//rect.y = cast(int)pos.y - rect.h/2;
 
 		auto angle = radiansToDegrees(atan2(dir.x, -dir.y));
 

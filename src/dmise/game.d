@@ -8,14 +8,12 @@ import dmise.texture;
 import dmise.util.stack;
 import dmise.util.list;
 
-//import std.container;
 
 class Game : GameState {
 
 	private
 	{
 		bool isRunning = true;
-		Texture background;
 		SDL_Rect bgRect;
 	}
 
@@ -28,9 +26,7 @@ class Game : GameState {
 		playerShip = new PlayerShip(this);
 		camera = new Camera();
 		entities = new LinkedList!(Entity)();
-
 		bgRect = SDL_Rect(0,0, gameInfo.width, gameInfo.height);
-		background = getTexture(getGraphics(), "bg.png");
 	}
 
 	~this() {
@@ -39,7 +35,7 @@ class Game : GameState {
 		}
 		entities.clear();
 		delete playerShip;
-		delete background;
+		delete camera;
 	}
 
 	void addProjectile(Projectile p) {

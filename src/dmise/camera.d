@@ -21,6 +21,7 @@ class Camera : GameObject
 
 	this() {
 		background = getTexture(getGraphics(), "bg.png");
+		//background = getTexture(getGraphics(), "background.png");
 	}
 
 	~this() {
@@ -37,17 +38,19 @@ class Camera : GameObject
 
 		// TODO: ship coordinates should wrap
 		auto x = pos.x;
-		if (x < 0) x += gameInfo.width;
 		x %= gameInfo.width;
-		auto y = pos.x;
-		if (y < 0) y += gameInfo.height;
+		if (x < 0) x += gameInfo.width;
+		auto y = pos.y;
 		y %= gameInfo.height;
-		assert(x >= 0);
-		assert(y >= 0);
+		if (y < 0) y += gameInfo.height;
+		debug assert(x >= 0);
+		debug assert(y >= 0);
+
+		SDL_Rect srcRect, dstRect;
 
 		// top left
-		SDL_Rect srcRect = getSDLRect(x, y, w-x, h-y);
-		SDL_Rect dstRect = getSDLRect(0, 0, w-x, h-y);
+		srcRect = getSDLRect(x, y, w-x, h-y);
+		dstRect = getSDLRect(0, 0, w-x, h-y);
 		SDL_RenderCopy(g.renderer, background, &srcRect, &dstRect);
 
 		// top right
@@ -55,12 +58,12 @@ class Camera : GameObject
 		dstRect = getSDLRect(w-x, 0, x, h-y);
 		SDL_RenderCopy(g.renderer, background, &srcRect, &dstRect);
 
-		// bottom left
+		//// bottom left
 		srcRect = getSDLRect(x, 0, w-x, y);
 		dstRect = getSDLRect(0, h-y, w-x, y);
 		SDL_RenderCopy(g.renderer, background, &srcRect, &dstRect);
 
-		// bottom right
+		//// bottom right
 		srcRect = getSDLRect(0, 0, x, y);
 		dstRect = getSDLRect(w-x, h-y, x, y);
 		SDL_RenderCopy(g.renderer, background, &srcRect, &dstRect);
