@@ -2,6 +2,7 @@ module dmise.main;
 
 import std.stdio : writefln, writeln;
 import dmise.core;
+import core.memory : GC;
 
 
 debug
@@ -170,6 +171,8 @@ private auto shutdown()
 			shutdownSystem = name;
 		}
 	}
+
+        GC.collect();
 
 	TTF_CloseFont(graphics.font);
 	debug shutdownLog("TTF_Quit");

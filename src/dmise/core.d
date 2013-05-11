@@ -156,11 +156,11 @@ auto makeText(string message, SDL_Color fgColor, SDL_Color bgColor = Colors.BACK
 	SDL_Surface* surface;
 	auto g = getGraphics();
 	version (textQualityLow) {
-		surface = TTF_RenderText_Solid(g.font, message.ptr, fgColor);
+		surface = TTF_RenderText_Solid(g.font, message.toStringz(), fgColor);
 	} else version (textQualityHigh) {
-		surface = TTF_RenderText_Blended(g.font, message.ptr, fgColor);
+		surface = TTF_RenderText_Blended(g.font, message.toStringz(), fgColor);
 	} else {
-		surface = TTF_RenderText_Shaded(g.font, message.ptr, fgColor, bgColor);
+		surface = TTF_RenderText_Shaded(g.font, message.toStringz(), fgColor, bgColor);
 	}
 
 	assert(surface, "could not render surface");

@@ -3,6 +3,9 @@ module dmise.texture;
 import dmise.core;
 import std.string : toStringz;
 import std.format : appender;
+import dmise.util.rescache;
+
+//mixin ResourceCacheMixin!(SDL_Texture*);
 
 /**
 

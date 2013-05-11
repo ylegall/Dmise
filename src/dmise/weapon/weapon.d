@@ -11,16 +11,15 @@ abstract class Weapon : Updateable
 {
 	protected {
 		int ammo;
-		Mix_Chunk* sound;
+		SoundResource sound;
 	}
 
 	this(string soundFile) {
-		sound = loadSound(soundFile);
+		sound = getSound(soundFile);
 		enforce(sound, soundFile ~ " sound is null");
 	}
 
 	~this() {
-		Mix_FreeChunk(sound);
 	}
 
 	bool isEmpty() {
@@ -88,7 +87,7 @@ class DefaultWeapon : Weapon
 	override
 	DefaultShot fire(Vector pos, Vector dir) {
 		reloadTime = 256;
-		playSound(sound);
+		playSound(sound.v);
 		return new DefaultShot(pos, dir);
 	}
 }

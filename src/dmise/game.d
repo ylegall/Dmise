@@ -1,4 +1,3 @@
-
 module dmise.game;
 
 import dmise.entity;
@@ -30,12 +29,13 @@ class Game : GameState {
 	}
 
 	~this() {
-		foreach (entity; entities) {
+		/* hdon sez gc
+                foreach (entity; entities) {
 			delete entity;
 		}
 		entities.clear();
 		delete playerShip;
-		delete camera;
+		delete camera;*/
 	}
 
 	void addProjectile(Projectile p) {
