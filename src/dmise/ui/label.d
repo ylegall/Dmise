@@ -24,9 +24,7 @@ class Label : AbstractContainer, GameObject
 	SDL_Color fgColor = Colors.DEFAULT_TEXT;
 
 	this(string text, TTF_Font* f = null) {
-                writefln("Label(\"%s\")", text);
 		this.text = text.idup;
-                writefln("idup: \"%s\"", this.text);
 		auto g = getGraphics();
 		if (!f) {
 			this.font = g.font;
