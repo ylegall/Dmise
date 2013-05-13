@@ -55,6 +55,8 @@ mixin template ResourceCacheMixin(T, KT=string)
     T v;
     KT k;
 
+    alias v this;
+
     this(KT k, T v)
     {
       this.k = k;

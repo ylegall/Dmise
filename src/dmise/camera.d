@@ -13,7 +13,7 @@ class Camera : GameObject
 {
 
 	private {
-		Texture background;
+		TextureResource background;
 		Coord pos;
 		const w = gameInfo.width;
 		const h = gameInfo.height;

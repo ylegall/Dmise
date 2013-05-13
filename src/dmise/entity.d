@@ -62,7 +62,7 @@ class PlayerShip : MovingEntity
 		SDL_Rect rect;
 		bool isBoosting;
 		bool isFiring;
-		Texture shipTexture;
+		TextureResource[7] shipTextures;
 		int propulsionVisualPower = 0;
 
 		auto shields = 100;             // TODO: load from configuration
@@ -92,7 +92,8 @@ class PlayerShip : MovingEntity
 			SIZE,
 			SIZE);
 
-		shipTexture = getTexture(getGraphics(), "ship-0.gif");
+                foreach (i; 0 .. 7)
+                  shipTextures[i] = getTexture(getGraphics(), "ship-0.gif", i);
 		dir = Vector(0,-1);
 		weapons = [new DefaultWeapon()];
 		this.game = game;
@@ -100,10 +101,6 @@ class PlayerShip : MovingEntity
 
 	this(Game game) {
 		this(Vec(100.0, 100.0), Vec(0.0, 0.0), game);
-	}
-
-	~this() {
-		SDL_DestroyTexture(shipTexture);
 	}
 
 	override void update(long delta) {
@@ -157,14 +154,13 @@ class PlayerShip : MovingEntity
 
 		auto angle = radiansToDegrees(atan2(dir.x, -dir.y));
 
-        if (isBoosting)
-            propulsionVisualPower = min(propulsionVisualPower+1, 60);
-        else
-            propulsionVisualPower = max(propulsionVisualPower-1, 0);
+                if (isBoosting)
+                        propulsionVisualPower = min(propulsionVisualPower+1, 60);
+                else
+                        propulsionVisualPower = max(propulsionVisualPower-1, 0);
 
-        // TODO: can the getTexture() be called in the contructor to preload the textures?
-		SDL_RenderCopyEx(g.renderer, getTexture(g, "ship-0.gif",
-                    propulsionVisualPower/10).texture, null, &rect, angle, null, SDL_FLIP_NONE);
+                SDL_RenderCopyEx(g.renderer, shipTextures[propulsionVisualPower/10],
+                                null, &rect, angle, null, SDL_FLIP_NONE);
 	};
 
 	void onKeyPress(SDL_KeyboardEvent keyEvent) {

@@ -102,7 +102,7 @@ class DefaultShot : Projectile
 	Vec heading;
 
 	private {
-		Texture texture;
+		TextureResource texture;
 		SDL_Rect rect;
 	}
 

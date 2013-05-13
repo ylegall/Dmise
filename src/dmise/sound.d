@@ -6,25 +6,26 @@ import dmise.util.rescache;
 
 // http://www.bfxr.net/
 
-mixin ResourceCacheMixin!(Mix_Chunk*);
+mixin ResourceCacheMixin!(Mix_Chunk*) mixed;
 
 private Resource loadResource(string k)
 {
   Mix_Chunk* v = loadSound(k);
-  if (!v)
+  if (v is null)
     return null;
   return new Resource(k, v);
 }
 
 private void freeResource(Mix_Chunk *v)
 {
-  if (v != null)
+  debug writefln("dmise.sound.freeResource(%p)", v);
+  if (v !is null)
     Mix_FreeChunk(v);
 }
 
 private class Resource
 {
-  mixin ResourceMixin;
+  mixin mixed.ResourceMixin;
 }
 
 alias get getSound;
